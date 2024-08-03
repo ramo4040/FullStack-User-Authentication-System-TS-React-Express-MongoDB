@@ -1,13 +1,25 @@
 import { useState } from 'react'
 import AuthForm from './AuthForm'
 import { EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline'
+import { LoginService } from '../../services/authService'
+import useAuth from '../../hooks/useAuth'
 
 const Login = () => {
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
+  const { setLoading, setAuthenticated } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+    setLoading(true)
+    const userResponse = await LoginService(formData)
+    if (userResponse.status && userResponse.user) {
+      setLoading(false)
+      setAuthenticated(true)
+    }
   }
 
   return (
