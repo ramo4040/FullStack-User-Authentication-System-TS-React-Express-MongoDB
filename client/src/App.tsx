@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import AuthPage from './pages/AuthPage'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
-import ProtectedPage from './pages/ProtectedPage'
+import AuthRoutes from './routes/AuthRoutes.routes'
+import DashboardRoutes from './routes/Dashboard.routes'
 
 function App() {
   return (
@@ -10,10 +10,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/**userAuth pages */}
-          <Route path="/auth/*" element={<AuthPage />} />
+          <Route path="/auth/*" element={<AuthRoutes />} />
           {/**Protected Routes*/}
           <Route element={<ProtectedRoute />}>
-            <Route path="/*" element={<ProtectedPage />} />
+            <Route path="/dashboard/*" element={<DashboardRoutes />} />
           </Route>
         </Routes>
       </BrowserRouter>

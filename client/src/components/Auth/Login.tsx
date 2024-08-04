@@ -3,11 +3,13 @@ import AuthForm from './AuthForm'
 import { EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline'
 import { LoginService } from '../../services/authService'
 import useAuth from '../../hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
   const { setLoading, setAuthenticated } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -19,6 +21,7 @@ const Login = () => {
     if (userResponse.status && userResponse.user) {
       setLoading(false)
       setAuthenticated(true)
+      navigate('/dashboard')
     }
   }
 

@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 
-const ProtectedPage = () => {
+const DashboardRoutes = () => {
   return (
     <Routes>
       <Route path="/dashboard" Component={() => <h1>Protected Route</h1>} />
@@ -8,4 +8,4 @@ const ProtectedPage = () => {
   )
 }
 
-export default ProtectedPage
+export default DashboardRoutes
