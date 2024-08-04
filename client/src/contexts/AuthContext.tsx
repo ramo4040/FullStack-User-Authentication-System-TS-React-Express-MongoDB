@@ -1,5 +1,6 @@
-import React, { createContext, useState } from 'react'
-import { AuthContextType, User } from '../types/authTypes'
+import React, { createContext, useEffect, useState } from 'react'
+import { AuthContextType } from '../types/authTypes'
+import { ValidateUserService } from '../services/authService'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -8,12 +9,24 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [isloading, setIsLoading] = useState<boolean>(true)
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
+  //check if user has a valid token
+  useEffect(() => {
+    const isValideToken = async () => {
+      const response = await ValidateUserService()
+      if (response.ok) {
+        setIsLoading(false)
+        setAuthenticated(true)
+        return
+      }
+      setIsLoading(false)
+    }
+    isValideToken()
+  }, [])
+
   const LogOut = async () => {
-    setUser(null)
     setAuthenticated(false)
   }
 
@@ -21,16 +34,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <>
       <AuthContext.Provider
         value={{
-          user,
-          setUser,
           LogOut,
-          loading,
-          setLoading,
+          isloading,
+          setIsLoading,
           isAuthenticated,
           setAuthenticated,
         }}
       >
-        {children}
+        {!isloading && children}
       </AuthContext.Provider>
     </>
   )

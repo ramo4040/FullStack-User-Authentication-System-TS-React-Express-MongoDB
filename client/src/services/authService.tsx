@@ -11,12 +11,24 @@ export const LoginService = async (
       credentials: 'include',
       body: formdata,
     })
-
-    return response.json()
+    const data = await response.json()
+    return data
   } catch (error) {
     return {
       success: false,
       message: 'An error occurred during authentication, Please try again.',
     }
+  }
+}
+
+export const ValidateUserService = async (): Promise<Partial<Response>> => {
+  try {
+    const response = await fetch(`${API_URL}/validate`, {
+      method: 'post',
+      credentials: 'include',
+    })
+    return response
+  } catch (error) {
+    return { ok: false }
   }
 }

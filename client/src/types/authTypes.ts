@@ -1,11 +1,9 @@
 import React from 'react'
 
 export interface AuthContextType {
-  user: User | null
-  setUser: React.Dispatch<React.SetStateAction<User | null>>
   LogOut: () => Promise<void>
-  loading: boolean
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  isloading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   isAuthenticated: boolean
   setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
 }
