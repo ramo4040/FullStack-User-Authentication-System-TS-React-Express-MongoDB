@@ -6,6 +6,8 @@ export interface AuthContextType {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   isAuthenticated: boolean
   setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
+  emailVerification: boolean
+  setEmailVerification: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export interface User {

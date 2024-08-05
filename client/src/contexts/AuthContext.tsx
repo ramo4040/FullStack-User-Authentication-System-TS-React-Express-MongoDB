@@ -10,6 +10,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isloading, setIsLoading] = useState<boolean>(true)
+  const [emailVerification, setEmailVerification] = useState<boolean>(false)
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
   //check if user has a valid token
@@ -49,6 +50,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoading,
           isAuthenticated,
           setAuthenticated,
+          emailVerification,
+          setEmailVerification,
         }}
       >
         {!isloading && children}
