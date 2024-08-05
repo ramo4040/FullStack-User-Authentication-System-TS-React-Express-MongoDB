@@ -44,9 +44,14 @@
     }
   }
 
-  form {
+  > div {
     display: grid;
     place-content: center;
+  }
+
+  form {
+    display: grid;
+    width: 340px;
     gap: 2rem;
 
     header p {
@@ -57,12 +62,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
 
       .group-input {
         width: 100%;
         display: grid;
-        gap: 0.5rem;
+        gap: 0.1rem;
 
         .input-auth {
           border: 2px solid #a4a9b278;
@@ -72,6 +77,10 @@
           padding: 0.7rem 1rem;
           color: black;
           width: 100%;
+          transition: 0.4s;
+          &:focus {
+            border: 2px solid black;
+          }
         }
 
         .forgot-password {

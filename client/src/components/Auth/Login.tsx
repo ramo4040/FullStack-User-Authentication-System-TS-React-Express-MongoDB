@@ -30,7 +30,7 @@ const Login = () => {
   return (
     <>
       <AuthForm
-        btnTitle="Sign in"
+        btnTitle="Sign In"
         description="Please fill your detail to access your account."
         onSubmit={handleSubmit}
       >
