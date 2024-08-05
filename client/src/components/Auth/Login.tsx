@@ -18,7 +18,7 @@ const Login = () => {
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
     const userResponse = await LoginService(formData)
-    if (userResponse.status && userResponse.user) {
+    if (userResponse.success && userResponse.user) {
       setAuthenticated(true)
       navigate('/dashboard')
       return
