@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 const Login = () => {
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
+  const [isError, setError] = useState<string>('')
   const { setAuthenticated } = useAuth()
   const navigate = useNavigate()
 
@@ -20,7 +21,10 @@ const Login = () => {
     if (userResponse.status && userResponse.user) {
       setAuthenticated(true)
       navigate('/dashboard')
+      return
     }
+
+    setError(userResponse.message)
   }
 
   return (
@@ -30,6 +34,7 @@ const Login = () => {
         description="Please fill your detail to access your account."
         onSubmit={handleSubmit}
       >
+        {isError && <div className="error-msg">{isError}</div>}
         <div className="group-input">
           <label htmlFor="email">Email</label>
           <input
