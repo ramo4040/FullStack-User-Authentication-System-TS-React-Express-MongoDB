@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { AuthContextType } from '../types/authTypes'
-import { ValidateUserService } from '../services/authService'
+import { RefreshToken, ValidateUserService } from '../services/authService'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -15,13 +15,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   //check if user has a valid token
   useEffect(() => {
     const isValideToken = async () => {
-      const response = await ValidateUserService()
-      if (response.ok) {
+      try {
+        const isValid = await ValidateUserService()
+
+        if (isValid.ok) {
+          setAuthenticated(true)
+          return
+        }
+
+        const refreshToken = await RefreshToken()
+
+        if (refreshToken.ok) {
+          setAuthenticated(true)
+          return
+        }
+      } finally {
         setIsLoading(false)
-        setAuthenticated(true)
-        return
       }
-      setIsLoading(false)
     }
     isValideToken()
   }, [])

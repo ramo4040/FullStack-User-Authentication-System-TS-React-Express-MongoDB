@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 const Login = () => {
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
-  const { setIsLoading, setAuthenticated } = useAuth()
+  const { setAuthenticated } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,10 +16,8 @@ const Login = () => {
 
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
-    setIsLoading(true)
     const userResponse = await LoginService(formData)
     if (userResponse.status && userResponse.user) {
-      setIsLoading(false)
       setAuthenticated(true)
       navigate('/dashboard')
     }

@@ -23,7 +23,19 @@ export const LoginService = async (
 
 export const ValidateUserService = async (): Promise<Partial<Response>> => {
   try {
-    const response = await fetch(`${API_URL}/validate`, {
+    const response = await fetch(`${API_URL}/token/validate`, {
+      method: 'post',
+      credentials: 'include',
+    })
+    return response
+  } catch (error) {
+    return { ok: false }
+  }
+}
+
+export const RefreshToken = async (): Promise<Partial<Response>> => {
+  try {
+    const response = await fetch(`${API_URL}/token/refresh`, {
       method: 'post',
       credentials: 'include',
     })
