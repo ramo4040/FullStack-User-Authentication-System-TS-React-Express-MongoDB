@@ -41,15 +41,16 @@ export const RegisterService = async (
   }
 }
 
-export const ValidateUserService = async (): Promise<Partial<Response>> => {
+export const ValidateUserService = async (): Promise<IStatusMessage> => {
   try {
     const response = await fetch(`${API_URL}/token/validate`, {
       method: 'post',
       credentials: 'include',
     })
-    return response
+    const data = await response.json()
+    return data
   } catch (error) {
-    return { ok: false }
+    return { success: false }
   }
 }
 
@@ -62,5 +63,22 @@ export const RefreshToken = async (): Promise<Partial<Response>> => {
     return response
   } catch (error) {
     return { ok: false }
+  }
+}
+
+export const verifyEmailService = async (
+  token: string,
+): Promise<IStatusMessage> => {
+  try {
+    const response = await fetch(`${API_URL}/verify-email?token=${token}`, {
+      credentials: 'include',
+    })
+    const data = await response.json()
+    return data
+  } catch (error) {
+    return {
+      success: false,
+      message: 'error',
+    }
   }
 }

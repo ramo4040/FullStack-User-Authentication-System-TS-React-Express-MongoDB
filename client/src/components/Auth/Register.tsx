@@ -2,15 +2,13 @@ import React, { useState } from 'react'
 import AuthForm from './AuthForm'
 import { EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline'
 import { RegisterService } from '../../services/authService'
-import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
-  const [isError, setError] = useState<string>('')
+  const [isError, setError] = useState<string | undefined>('')
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
 
-  const { setEmailVerification } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,8 +17,7 @@ const Register = () => {
     const response = await RegisterService(formData)
 
     if (response.success) {
-      setEmailVerification(true)
-      navigate('/auth/verify-email')
+      navigate('/login')
       return
     }
 

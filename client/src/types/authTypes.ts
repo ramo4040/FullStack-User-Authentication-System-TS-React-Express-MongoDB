@@ -6,8 +6,8 @@ export interface AuthContextType {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   isAuthenticated: boolean
   setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
-  emailVerification: boolean
-  setEmailVerification: React.Dispatch<React.SetStateAction<boolean>>
+  isEmailVerified: boolean
+  setIsEmailVerified: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export interface User {
@@ -24,8 +24,9 @@ export interface LoginData {
 export interface IStatusMessage {
   success: boolean
   status?: number
-  message: string
+  message?: string
   user?: User | null
+  isEmailVerified?: boolean
   accessToken?: string
   refreshToken?: string
 }

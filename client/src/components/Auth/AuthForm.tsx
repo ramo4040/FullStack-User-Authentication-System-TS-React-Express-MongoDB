@@ -62,13 +62,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
               <p>
                 {btnTitle === 'Sign In' ? (
                   <p>
-                    Don't have an account?{' '}
-                    <Link to="/auth/register">Sign Up</Link>
+                    Don't have an account? <Link to="/register">Sign Up</Link>
                   </p>
                 ) : (
                   <p>
-                    Already has an account?{' '}
-                    <Link to="/auth/login">Sign In</Link>
+                    Already has an account? <Link to="/login">Sign In</Link>
                   </p>
                 )}
               </p>

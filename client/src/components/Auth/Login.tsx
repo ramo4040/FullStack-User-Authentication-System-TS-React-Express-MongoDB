@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 const Login = () => {
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
-  const [isError, setError] = useState<string>('')
+  const [isError, setError] = useState<string | undefined>('')
   const { setAuthenticated } = useAuth()
   const navigate = useNavigate()
 
@@ -18,7 +18,14 @@ const Login = () => {
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
     const userResponse = await LoginService(formData)
-    if (userResponse.success && userResponse.user) {
+
+    if (userResponse.success && !userResponse.isEmailVerified) {
+      setAuthenticated(true)
+      navigate('/verify-email')
+      return
+    }
+
+    if (userResponse.success) {
       setAuthenticated(true)
       navigate('/dashboard')
       return

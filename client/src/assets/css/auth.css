@@ -179,12 +179,16 @@
     }
 
     section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
       flex: 80%;
       max-width: 70%;
 
       img {
         width: 100%;
-        max-width: 15rem;
+        max-width: 17rem;
         aspect-ratio: 1;
       }
 
@@ -200,6 +204,7 @@
         background: #e5dfff;
         color: #2c2c2c;
         margin-top: 0.6rem;
+        font-size: 14px;
       }
     }
   }

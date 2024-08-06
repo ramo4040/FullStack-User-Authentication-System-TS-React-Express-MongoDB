@@ -1,5 +1,33 @@
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import img from '../assets/images/verify-email-logo.png'
+import useAuth from '../hooks/useAuth'
+import { useEffect } from 'react'
+import { verifyEmailService } from '../services/authService'
+
 const VerifyEmailPage = () => {
+  const { isEmailVerified, setIsEmailVerified } = useAuth()
+
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get('token')
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const verifyEmail = async () => {
+      if (token) {
+        const response = await verifyEmailService(token)
+        if (response.success) {
+          setIsEmailVerified(true)
+          navigate('/dashboard')
+        }
+      }
+    }
+    verifyEmail()
+  }, [])
+
+  if (isEmailVerified) {
+    return <Navigate to="/dashboard" />
+  }
+
   const handleSubmit = () => {}
 
   return (

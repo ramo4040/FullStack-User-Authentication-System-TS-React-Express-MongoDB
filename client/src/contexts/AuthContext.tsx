@@ -10,16 +10,17 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isloading, setIsLoading] = useState<boolean>(true)
-  const [emailVerification, setEmailVerification] = useState<boolean>(false)
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false)
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
 
   //check if user has a valid token
   useEffect(() => {
     const isValideToken = async () => {
       try {
-        const isValid = await ValidateUserService()
+        const accessToken = await ValidateUserService()
 
-        if (isValid.ok) {
+        if (accessToken.success) {
+          setIsEmailVerified(accessToken.isEmailVerified as boolean)
           setAuthenticated(true)
           return
         }
@@ -50,8 +51,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoading,
           isAuthenticated,
           setAuthenticated,
-          emailVerification,
-          setEmailVerification,
+          isEmailVerified,
+          setIsEmailVerified,
         }}
       >
         {!isloading && children}
