@@ -1,19 +1,15 @@
 import { IStatusMessage } from '../types/authTypes'
-
-const API_URL = 'http://localhost:3000/api/v1/auth'
+import _apiClient from '../api/api-client'
+import axios, { AxiosResponse } from 'axios'
 
 export const LoginService = async (
   formdata: FormData,
 ): Promise<IStatusMessage> => {
   try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: 'POST',
-      credentials: 'include',
-      body: formdata,
-    })
-    const data = await response.json()
-    return data
+    const res = await _apiClient.post<IStatusMessage>('/login', formdata)
+    return res.data
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response) return error.response.data
     return {
       success: false,
       message: 'An error occurred during authentication, Please try again.',
@@ -25,15 +21,10 @@ export const RegisterService = async (
   formdata: FormData,
 ): Promise<IStatusMessage> => {
   try {
-    const response = await fetch(`${API_URL}/register`, {
-      method: 'POST',
-      credentials: 'include',
-      body: formdata,
-    })
-
-    const data = await response.json()
-    return data
+    const res = await _apiClient.post<IStatusMessage>('/register', formdata)
+    return res.data
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response) return error.response.data
     return {
       success: false,
       message: 'An error occurred during registration, Please try again.',
@@ -41,28 +32,14 @@ export const RegisterService = async (
   }
 }
 
-export const ValidateUserService = async (): Promise<IStatusMessage> => {
+export const RefreshAccessToken = async (): Promise<
+  AxiosResponse | undefined
+> => {
   try {
-    const response = await fetch(`${API_URL}/token/validate`, {
-      method: 'post',
-      credentials: 'include',
-    })
-    const data = await response.json()
-    return data
+    const res = await _apiClient.post('/token/refresh')
+    return res
   } catch (error) {
-    return { success: false }
-  }
-}
-
-export const RefreshToken = async (): Promise<Partial<Response>> => {
-  try {
-    const response = await fetch(`${API_URL}/token/refresh`, {
-      method: 'post',
-      credentials: 'include',
-    })
-    return response
-  } catch (error) {
-    return { ok: false }
+    if (axios.isAxiosError(error) && error.response) return error.response.data
   }
 }
 
@@ -70,12 +47,10 @@ export const verifyEmailService = async (
   token: string,
 ): Promise<IStatusMessage> => {
   try {
-    const response = await fetch(`${API_URL}/verify-email?token=${token}`, {
-      credentials: 'include',
-    })
-    const data = await response.json()
-    return data
+    const res = await _apiClient.get(`/verify-email?token=${token}`)
+    return res.data
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response) return error.response.data
     return {
       success: false,
       message: 'error',
