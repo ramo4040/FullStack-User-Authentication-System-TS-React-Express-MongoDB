@@ -56,7 +56,7 @@ export default class AuthService implements IAuthService {
    */
   private async sendVerificationEmail(username: string, email: string): Promise<void> {
     const verifyEmailToken = await this.AuthToken.generateVerifyEmailToken(username)
-    const verificationUrl = `http://localhost:3000/api/v1/auth/verify-email?token=${verifyEmailToken}`
+    const verificationUrl = `http://localhost:5173/verify-email?token=${verifyEmailToken}`
     const mailoptions = {
       from: env.MAILER.user,
       to: email,
@@ -113,7 +113,7 @@ export default class AuthService implements IAuthService {
             status: 200,
             accessToken: accessToken,
             refreshToken: refreshToken,
-            user: user,
+            isEmailVerified: user.isEmailVerified,
             message: 'You have successfully logged in.',
           }
         }
@@ -169,17 +169,27 @@ export default class AuthService implements IAuthService {
     // check if token valid
     if (decodeVmToken) {
       // update verified
-      const user = await this.UserRepository.update({ username: decodeVmToken.username }, { emailVerified: true })
-      console.log(user)
+      const user = (await this.UserRepository.update(
+        { username: decodeVmToken.username },
+        { isEmailVerified: true },
+      )) as IUser
 
-      if (user.modifiedCount) {
+      const newRefreshToken = await this.AuthToken.generateRefreshToken(user)
+      const newAccessToken = await this.AuthToken.generateAccessToken(user)
+
+      await this.RefreshTokenRepo.findByUserId(user._id, newRefreshToken)
+
+      if (user) {
         return {
           success: true,
           status: 200,
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
           message: 'Your email address has been successfully verified.',
         }
       }
     }
+
     return {
       success: false,
       status: 400,
@@ -198,7 +208,7 @@ export default class AuthService implements IAuthService {
     }
 
     const newRefreshToken = await this.AuthToken.generateRefreshToken(refreshToken)
-    const isRefreshTokenValid = await this.RefreshTokenRepo.findByRefreshToken(token, newRefreshToken)
+    const isRefreshTokenValid = await this.RefreshTokenRepo.findByUserId(refreshToken.userId, newRefreshToken)
 
     // check if refresh token exist
     if (isRefreshTokenValid) {

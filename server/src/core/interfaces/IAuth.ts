@@ -32,6 +32,7 @@ export interface IStatusMessage {
   status: number
   message?: string
   user?: IUser | null
+  isEmailVerified?: boolean
   accessToken?: string
   refreshToken?: string
 }

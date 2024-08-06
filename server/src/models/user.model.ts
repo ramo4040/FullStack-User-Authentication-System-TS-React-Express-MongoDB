@@ -11,7 +11,7 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     password: { type: String, required: true },
-    emailVerified: { type: Boolean, default: false },
+    isEmailVerified: { type: Boolean, default: false },
   },
   { collection: 'Users' },
 )

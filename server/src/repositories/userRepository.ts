@@ -2,7 +2,6 @@ import { IRegistrationData } from '@/core/interfaces/IAuth'
 import { IUser, IUserRepository } from '@/core/interfaces/IUser'
 import { UserModel } from '@/models/user.model'
 import { injectable } from 'inversify'
-import { UpdateWriteOpResult } from 'mongoose'
 
 @injectable()
 export default class UserRepository implements IUserRepository<IUser> {
@@ -27,7 +26,7 @@ export default class UserRepository implements IUserRepository<IUser> {
     return await UserModel.findOne(data).exec()
   }
 
-  async update(filter: Partial<IUser>, data: Partial<IUser>): Promise<UpdateWriteOpResult> {
-    return await UserModel.updateOne(filter, { $set: data })
+  async update(filter: Partial<IUser>, data: Partial<IUser>): Promise<IUser | null> {
+    return await UserModel.findOneAndUpdate(filter, { $set: data }, { new: true })
   }
 }

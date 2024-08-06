@@ -1,10 +1,17 @@
 import { inject, injectable } from 'inversify'
 import { CookieOptions, Request, Response } from 'express'
 import TYPES from '@/core/constants/TYPES'
-import { IAuthController, IAuthService } from '@/core/interfaces/IAuth'
+import { IAuthController, IAuthService, IStatusMessage } from '@/core/interfaces/IAuth'
 
 @injectable()
 export default class AuthController implements IAuthController {
+  private readonly options: CookieOptions = {
+    httpOnly: true,
+    domain: 'localhost',
+    // secure: true, // https
+    sameSite: 'strict',
+  }
+
   /**
    * @param AuthService the service responsible for handling user registration and login logic.
    */
@@ -21,11 +28,14 @@ export default class AuthController implements IAuthController {
    */
 
   handleAuthUser = async (req: Request, res: Response): Promise<void> => {
-    if (res.locals.isValid) {
-      res.status(200).end()
+    const { status, success, isEmailVerified } = res.locals.decode as IStatusMessage
+
+    if (success) {
+      res.status(status).send({ success: success, isEmailVerified: isEmailVerified })
       return
     }
-    res.status(401).send({ message: 'UNAUTHORIZED' })
+
+    res.status(status).send({ success: success, message: 'UNAUTHORIZED' })
   }
 
   refreshToken = async (req: Request, res: Response): Promise<void> => {
@@ -34,16 +44,9 @@ export default class AuthController implements IAuthController {
     )
 
     if (success) {
-      const options: CookieOptions = {
-        domain: 'localhost',
-        // secure:true, // https only
-        httpOnly: true,
-        sameSite: 'strict',
-      }
-
-      res.cookie('accessToken', accessToken, { ...options, path: '/', maxAge: 15 * 60 * 1000 })
+      res.cookie('accessToken', accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
       res.cookie('refreshToken', refreshToken, {
-        ...options,
+        ...this.options,
         path: '/api/v1/auth/token/refresh',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
@@ -61,16 +64,9 @@ export default class AuthController implements IAuthController {
     const result = await this.AuthService.login(req.body)
     // add token in cookie
     if (result.success) {
-      const options: CookieOptions = {
-        httpOnly: true,
-        domain: 'localhost',
-        // secure: true, // https
-        sameSite: 'strict',
-      }
-
-      res.cookie('accessToken', result.accessToken, { ...options, path: '/', maxAge: 15 * 60 * 1000 })
+      res.cookie('accessToken', result.accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
       res.cookie('refreshToken', result.refreshToken, {
-        ...options,
+        ...this.options,
         path: '/api/v1/auth/token/refresh',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
@@ -94,7 +90,19 @@ export default class AuthController implements IAuthController {
 
   verifyEmail = async (req: Request, res: Response): Promise<void> => {
     // check if token is valid and user exist
-    const { status, message } = await this.AuthService.verifyEmail(req.query.token as string)
-    res.status(status).send({ message: message })
+    const { success, status, message, accessToken, refreshToken } = await this.AuthService.verifyEmail(
+      req.query.token as string,
+    )
+
+    if (success) {
+      res.cookie('accessToken', accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
+      res.cookie('refreshToken', refreshToken, {
+        ...this.options,
+        path: '/api/v1/auth/token/refresh',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+    }
+
+    res.status(status).send({ message: message, success: success })
   }
 }
