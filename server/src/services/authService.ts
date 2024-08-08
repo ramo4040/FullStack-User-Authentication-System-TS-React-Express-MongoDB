@@ -28,7 +28,6 @@ export default class AuthService implements IAuthService {
    * @returns return promise object IStatusMessage.
    * @throws error if the username or email already exists, or if there is a problem saving the user
    */
-
   async register(data: IRegistrationData): Promise<IStatusMessage> {
     try {
       // hash password
@@ -106,14 +105,15 @@ export default class AuthService implements IAuthService {
 
           // save refresb token
           await this.RefreshTokenRepo.create(user._id, refreshToken)
-
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { password, ...withoutPassword } = user.toObject()
           //send response message
           return {
             success: true,
             status: 200,
             accessToken: accessToken,
             refreshToken: refreshToken,
-            isEmailVerified: user.isEmailVerified,
+            user: withoutPassword,
             message: 'You have successfully logged in.',
           }
         }

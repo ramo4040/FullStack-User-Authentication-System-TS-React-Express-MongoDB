@@ -11,6 +11,8 @@ import AuthMiddleware from '@/middlewares/authMiddleware'
 import RefreshTokenRepo from '@/repositories/refreshTokenRepo'
 import AuthValidator from '@/validator/authValidator'
 import NodeMailer from '@/utils/mailer'
+import UserRoutes from '@/routes/auth/userRoutes'
+import UserController from '@/controllers/userController'
 
 const container = new Container()
 
@@ -18,6 +20,9 @@ container.bind(TYPES.AuthRoutes).to(AuthRoutes)
 container.bind(TYPES.AuthController).to(AuthController)
 container.bind(TYPES.BaseRoutes).to(BaseRoutes)
 container.bind(TYPES.AuthService).to(AuthService)
+container.bind(TYPES.UserRoutes).to(UserRoutes)
+container.bind(TYPES.UserController).to(UserController)
+
 container.bind(TYPES.AuthMiddleware).to(AuthMiddleware)
 
 //Utils

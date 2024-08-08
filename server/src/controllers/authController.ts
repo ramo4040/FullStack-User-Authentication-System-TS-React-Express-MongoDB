@@ -72,9 +72,9 @@ export default class AuthController implements IAuthController {
       })
     }
 
-    delete result.accessToken
-    delete result.refreshToken
-    res.status(result.status).send(result)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { accessToken, refreshToken, ...withoutTokens } = result
+    res.status(result.status).send(withoutTokens)
   }
 
   logout = async (req: Request, res: Response): Promise<void> => {

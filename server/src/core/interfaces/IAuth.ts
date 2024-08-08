@@ -17,7 +17,7 @@ export interface IAuthService {
   logout(accessToken: string): Promise<IStatusMessage>
   verifyEmail(verifyToken: string): Promise<IStatusMessage>
 }
-export interface IAuthRoutes {
+export interface IRoutes {
   router: Router
   registerRoutes(): void
 }
@@ -31,7 +31,7 @@ export interface IStatusMessage {
   success: boolean
   status: number
   message?: string
-  user?: IUser | null
+  user?: Partial<IUser> | null
   isEmailVerified?: boolean
   accessToken?: string
   refreshToken?: string

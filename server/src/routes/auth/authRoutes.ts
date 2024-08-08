@@ -1,11 +1,11 @@
 import TYPES from '@/core/constants/TYPES'
-import { IAuthController, IAuthMiddleware, IAuthRoutes } from '@/core/interfaces/IAuth'
+import { IAuthController, IAuthMiddleware, IRoutes } from '@/core/interfaces/IAuth'
 import { IAuthValidator } from '@/core/interfaces/IValidator'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
 
 @injectable()
-export default class AuthRoutes implements IAuthRoutes {
+export default class AuthRoutes implements IRoutes {
   public readonly router: Router
 
   constructor(
