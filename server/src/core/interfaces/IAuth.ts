@@ -2,7 +2,6 @@ import { NextFunction, type Request, type Response, type Router } from 'express'
 import { IUser } from './IUser'
 
 export interface IAuthController {
-  handleAuthUser(req: Request, res: Response): Promise<void>
   refreshToken(req: Request, res: Response): Promise<void>
   register(req: Request, res: Response): Promise<void>
   login(req: Request, res: Response): Promise<void>

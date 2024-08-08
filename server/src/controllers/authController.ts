@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
 import { CookieOptions, Request, Response } from 'express'
 import TYPES from '@/core/constants/TYPES'
-import { IAuthController, IAuthService, IStatusMessage } from '@/core/interfaces/IAuth'
+import { IAuthController, IAuthService } from '@/core/interfaces/IAuth'
 
 @injectable()
 export default class AuthController implements IAuthController {
@@ -26,34 +26,6 @@ export default class AuthController implements IAuthController {
    * @param req The Express request object
    * @param res The Express response object
    */
-
-  handleAuthUser = async (req: Request, res: Response): Promise<void> => {
-    const { status, success, isEmailVerified } = res.locals.decode as IStatusMessage
-
-    if (success) {
-      res.status(status).send({ success: success, isEmailVerified: isEmailVerified })
-      return
-    }
-
-    res.status(status).send({ success: success, message: 'UNAUTHORIZED' })
-  }
-
-  refreshToken = async (req: Request, res: Response): Promise<void> => {
-    const { status, success, refreshToken, accessToken } = await this.AuthService.handleRefreshToken(
-      req.cookies.refreshToken,
-    )
-
-    if (success) {
-      res.cookie('accessToken', accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
-      res.cookie('refreshToken', refreshToken, {
-        ...this.options,
-        path: '/api/v1/auth/token/refresh',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
-    }
-
-    res.status(status).end()
-  }
 
   register = async (req: Request, res: Response): Promise<void> => {
     const result = await this.AuthService.register(req.body)
@@ -104,5 +76,22 @@ export default class AuthController implements IAuthController {
     }
 
     res.status(status).send({ message: message, success: success })
+  }
+
+  refreshToken = async (req: Request, res: Response): Promise<void> => {
+    const { status, success, refreshToken, accessToken } = await this.AuthService.handleRefreshToken(
+      req.cookies.refreshToken,
+    )
+
+    if (success) {
+      res.cookie('accessToken', accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
+      res.cookie('refreshToken', refreshToken, {
+        ...this.options,
+        path: '/api/v1/auth/token/refresh',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+    }
+
+    res.status(status).end()
   }
 }

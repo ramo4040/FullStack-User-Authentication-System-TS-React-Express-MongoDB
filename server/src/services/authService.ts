@@ -60,7 +60,7 @@ export default class AuthService implements IAuthService {
       from: env.MAILER.user,
       to: email,
       subject: 'Verify Your Email',
-      html: `<a href="${verificationUrl}">${verificationUrl}</a>`,
+      html: `<a href="${verificationUrl}">Click here</a>`,
     }
     this.NodeMailer.sendMail(mailoptions)
   }
@@ -142,7 +142,6 @@ export default class AuthService implements IAuthService {
 
     if (decode) {
       const result = await this.RefreshTokenRepo.deleteByUserId(decode._id)
-      console.log(result)
       if (result) {
         return {
           success: true,
@@ -155,7 +154,7 @@ export default class AuthService implements IAuthService {
     return {
       success: false,
       status: 404,
-      message: 'Invalid refresh token.',
+      message: 'Error',
     }
   }
 

@@ -14,6 +14,8 @@ export default class UserController implements IUserController {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...withoutPassword } = user.toObject()
       res.status(200).send(withoutPassword)
+      return
     }
+    res.status(404).end
   }
 }
