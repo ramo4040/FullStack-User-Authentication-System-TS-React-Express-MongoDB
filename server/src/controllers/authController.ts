@@ -50,13 +50,15 @@ export default class AuthController implements IAuthController {
   }
 
   logout = async (req: Request, res: Response): Promise<void> => {
-    const { accessToken } = req.cookies
-    // check if token exist and delete them
-    const { success, status, message } = await this.AuthService.logout(accessToken)
+    const userID = res.locals.userID
+
+    const { success, status, message } = await this.AuthService.logout(userID)
+
     if (success) {
       res.clearCookie('accessToken')
-      res.clearCookie('refreshToken')
+      res.clearCookie('refreshToken', { path: '/api/v1/auth/token/refresh' })
     }
+
     res.status(status).send({ message: message })
   }
 

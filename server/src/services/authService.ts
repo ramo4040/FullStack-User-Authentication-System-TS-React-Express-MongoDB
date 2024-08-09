@@ -137,17 +137,14 @@ export default class AuthService implements IAuthService {
     }
   }
 
-  async logout(accessToken: string): Promise<IStatusMessage> {
-    const decode = await this.AuthToken.verify(accessToken, env.ACCESS_TOKEN.secret)
+  async logout(userID: string): Promise<IStatusMessage> {
+    const result = await this.RefreshTokenRepo.deleteByUserId(userID)
 
-    if (decode) {
-      const result = await this.RefreshTokenRepo.deleteByUserId(decode._id)
-      if (result) {
-        return {
-          success: true,
-          status: 200,
-          message: 'You have successfully logged out!',
-        }
+    if (result) {
+      return {
+        success: true,
+        status: 200,
+        message: 'You have successfully logged out!',
       }
     }
 

@@ -33,5 +33,5 @@ export interface IUserController {
 export interface IRefreshTokenRepo<T> {
   create(userId: ObjectId, refreshToken: string): Promise<void>
   findByUserId(userId: string | ObjectId, newRefreshToken: string): Promise<T | null>
-  deleteByUserId(userId: ObjectId): Promise<IUserRefreshToken | null>
+  deleteByUserId(userId: string): Promise<IUserRefreshToken | null>
 }

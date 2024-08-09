@@ -13,7 +13,7 @@ export interface IAuthService {
   handleRefreshToken(token: string): Promise<IStatusMessage>
   register(data: IRegistrationData): Promise<IStatusMessage>
   login(data: IRegistrationData): Promise<IStatusMessage>
-  logout(accessToken: string): Promise<IStatusMessage>
+  logout(userID: string): Promise<IStatusMessage>
   verifyEmail(verifyToken: string): Promise<IStatusMessage>
 }
 export interface IRoutes {
