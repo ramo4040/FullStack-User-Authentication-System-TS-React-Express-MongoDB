@@ -16,8 +16,40 @@ export default class NodeMailer implements INodeMailer {
     },
   })
 
-  async sendMail(option: object): Promise<void> {
-    await this.emailTransporter.sendMail(option, (error) => {
+  /**
+   * Sends a verification email to the user.
+   * @param username - The username of the user.
+   * @param email - The email address of the user.
+   * @returns Promise<void>
+   */
+  async sendVerificationEmail(email: string, token: string): Promise<void> {
+    const verificationUrl = `http://localhost:3000/api/v1/auth/verify-email?token=${token}`
+
+    const mailoptions = {
+      from: env.MAILER.user,
+      to: email,
+      subject: 'Verify Your Email',
+      html: `<a href="${verificationUrl}">Click here</a>`,
+    }
+
+    this.sendMail(mailoptions)
+  }
+
+  async sendForgotPwdEmail(email: string, token: string): Promise<void> {
+    const verificationUrl = `http://localhost:5173/password-reset?token=${token}`
+
+    const mailoptions = {
+      from: env.MAILER.user,
+      to: email,
+      subject: 'Reset your password',
+      html: `<a href="${verificationUrl}">Click here</a>`,
+    }
+
+    this.sendMail(mailoptions)
+  }
+
+  private async sendMail(options: object): Promise<void> {
+    await this.emailTransporter.sendMail(options, (error) => {
       if (error) {
         console.log(error)
       }

@@ -6,8 +6,13 @@ export interface IUser extends Document {
   _id: ObjectId
   username: string
   email: string
-  password: string
+  verificationToken: string | undefined
   isEmailVerified: boolean
+  password: string
+}
+export interface UpdateData {
+  $set?: Partial<IUser>
+  $unset?: { [key in keyof IUser]?: '' }
 }
 
 export interface IUserRefreshToken extends Document {
@@ -17,9 +22,10 @@ export interface IUserRefreshToken extends Document {
 }
 
 export interface IUserRepository<T> {
-  createUser(data: IRegistrationData): Promise<T>
-  findOne(data: Partial<T>): Promise<T | null>
-  update(filter: Partial<T>, data: Partial<T>): Promise<T | null>
+  createUserModel(data: IRegistrationData): Promise<IUser>
+  saveUser(user: IUser): Promise<IUser>
+  findOne(data: Partial<IUser>): Promise<T | null>
+  update(filter: Partial<T>, data: UpdateData): Promise<T | null>
   //   findAll(): Promise<T[]>;
   //   delete(id: string): Promise<T | null>;
 }

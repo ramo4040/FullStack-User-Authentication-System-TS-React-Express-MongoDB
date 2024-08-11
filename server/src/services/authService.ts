@@ -32,10 +32,15 @@ export default class AuthService implements IAuthService {
     try {
       // hash password
       data.password = await this.PasswordHasher.hashPassword(data.password)
+      // create user model
+      const user = await this.UserRepository.createUserModel(data)
+      // create verification token
+      user.verificationToken = await this.AuthToken.generateEmailToken(user.id)
       // create user in database
-      await this.UserRepository.createUser(data)
+      await this.UserRepository.saveUser(user)
       // send email verification
-      await this.sendVerificationEmail(data.username, data.email)
+      this.NodeMailer.sendVerificationEmail(user.email, user.verificationToken as string)
+
       // return promise object
       return {
         success: true,
@@ -45,24 +50,6 @@ export default class AuthService implements IAuthService {
     } catch (error: any) {
       return await this.handleRegistrationError(error)
     }
-  }
-
-  /**
-   * Sends a verification email to the user.
-   * @param username - The username of the user.
-   * @param email - The email address of the user.
-   * @returns Promise<void>
-   */
-  private async sendVerificationEmail(username: string, email: string): Promise<void> {
-    const verifyEmailToken = await this.AuthToken.generateVerifyEmailToken(username)
-    const verificationUrl = `http://localhost:5173/verify-email?token=${verifyEmailToken}`
-    const mailoptions = {
-      from: env.MAILER.user,
-      to: email,
-      subject: 'Verify Your Email',
-      html: `<a href="${verificationUrl}">Click here</a>`,
-    }
-    this.NodeMailer.sendMail(mailoptions)
   }
 
   /**
@@ -102,7 +89,6 @@ export default class AuthService implements IAuthService {
           //generate token
           const accessToken = await this.AuthToken.generateAccessToken(user)
           const refreshToken = await this.AuthToken.generateRefreshToken(user)
-
           // save refresb token
           await this.RefreshTokenRepo.create(user._id, refreshToken)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -160,36 +146,29 @@ export default class AuthService implements IAuthService {
    * @param verifyToken token generated when user register
    * @returns return promise object IStatusMessage.
    */
-  async verifyEmail(verifyToken: string): Promise<IStatusMessage> {
-    const decodeVmToken = await this.AuthToken.verify(verifyToken, env.VERIFY_EMAIL.secret)
-    // check if token valid
-    if (decodeVmToken) {
-      // update verified
-      const user = (await this.UserRepository.update(
-        { username: decodeVmToken.username },
-        { isEmailVerified: true },
-      )) as IUser
+  async verifyEmail(verifyToken: string, oldAccessToken: string | null): Promise<Partial<IStatusMessage | void>> {
+    const decodeVerifyToken = await this.AuthToken.verify(verifyToken, env.EMAIL.secret)
 
-      const newRefreshToken = await this.AuthToken.generateRefreshToken(user)
-      const newAccessToken = await this.AuthToken.generateAccessToken(user)
+    if (!decodeVerifyToken) return
 
-      await this.RefreshTokenRepo.findByUserId(user._id, newRefreshToken)
+    const user = await this.UserRepository.update(
+      { verificationToken: verifyToken },
+      {
+        $set: { isEmailVerified: true },
+        $unset: { verificationToken: '' },
+      },
+    )
 
-      if (user) {
-        return {
-          success: true,
-          status: 200,
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
-          message: 'Your email address has been successfully verified.',
-        }
-      }
-    }
+    if (!user || oldAccessToken) return
+
+    const accessToken = await this.AuthToken.generateAccessToken(user as IUser)
+    const refreshToken = await this.AuthToken.generateRefreshToken(user as IUser)
+
+    await this.RefreshTokenRepo.findByUserId(user?.id, refreshToken)
 
     return {
-      success: false,
-      status: 400,
-      message: 'Invalid verification token.',
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     }
   }
 
@@ -223,6 +202,26 @@ export default class AuthService implements IAuthService {
     return {
       status: 401,
       success: false,
+    }
+  }
+
+  async sendPwdForgotToken(email: string): Promise<IStatusMessage> {
+    const isEmailValid = await this.UserRepository.findOne({ email: email })
+
+    if (isEmailValid) {
+      const token = await this.AuthToken.generateEmailToken(isEmailValid.id)
+      await this.NodeMailer.sendForgotPwdEmail(email, token)
+
+      return {
+        success: true,
+        status: 200,
+        message: 'Please check your email',
+      }
+    }
+    return {
+      success: false,
+      status: 404,
+      message: 'User email not found ',
     }
   }
 }

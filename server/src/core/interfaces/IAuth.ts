@@ -7,6 +7,7 @@ export interface IAuthController {
   login(req: Request, res: Response): Promise<void>
   logout(req: Request, res: Response): Promise<void>
   verifyEmail(req: Request, res: Response): Promise<void>
+  sendPwdForgotToken(req: Request, res: Response): Promise<void>
 }
 
 export interface IAuthService {
@@ -14,7 +15,8 @@ export interface IAuthService {
   register(data: IRegistrationData): Promise<IStatusMessage>
   login(data: IRegistrationData): Promise<IStatusMessage>
   logout(userID: string): Promise<IStatusMessage>
-  verifyEmail(verifyToken: string): Promise<IStatusMessage>
+  verifyEmail(verifyToken: string, oldAccessToken: string | null): Promise<Partial<IStatusMessage | void>>
+  sendPwdForgotToken(email: string): Promise<IStatusMessage>
 }
 export interface IRoutes {
   router: Router
@@ -25,9 +27,10 @@ export interface IRegistrationData {
   email: string
   password: string
   confirmPassword: string
+  verificationToken?: string
 }
 export interface IStatusMessage {
-  success: boolean
+  success?: boolean
   status: number
   message?: string
   user?: Partial<IUser> | null

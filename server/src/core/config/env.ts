@@ -14,9 +14,9 @@ const env = {
     secret: get('AUTH_REFRESH_TOKEN_SECRET').required().asString(),
     expire: get('AUTH_REFRESH_TOKEN_EXPIRY').required().asString(),
   },
-  VERIFY_EMAIL: {
-    secret: get('VERIFY_EMAIL_TOKEN_SECRET').required().asString(),
-    expire: get('VERIFY_EMAIL_TOKEN_EXPIRY').required().asString(),
+  EMAIL: {
+    secret: get('EMAIL_TOKEN_SECRET').required().asString(),
+    expire: get('EMAIL_TOKEN_EXPIRY').required().asString(),
   },
   MAILER: {
     user: get('AUTH_EMAIL_USER').required().asEmailString(),

@@ -1,5 +1,5 @@
 import { IRegistrationData } from '@/core/interfaces/IAuth'
-import { IUser, IUserRepository } from '@/core/interfaces/IUser'
+import { IUser, IUserRepository, UpdateData } from '@/core/interfaces/IUser'
 import { UserModel } from '@/models/user.model'
 import { injectable } from 'inversify'
 import { FilterQuery } from 'mongoose'
@@ -8,14 +8,22 @@ import { FilterQuery } from 'mongoose'
 export default class UserRepository implements IUserRepository<IUser> {
   /**
    * @param data object containing the user information
-   * @returns promise user object from mongodb
+   * @returns user model instance
    */
-  async createUser(data: IRegistrationData): Promise<IUser> {
-    return await UserModel.create({
+  async createUserModel(data: IRegistrationData): Promise<IUser> {
+    return new UserModel({
       username: data.username,
       email: data.email,
       password: data.password,
     })
+  }
+
+  /**
+   * @param user user model instance
+   * @returns promise user object from mongodb
+   */
+  async saveUser(user: IUser): Promise<IUser> {
+    return await user.save()
   }
 
   /**
@@ -27,7 +35,7 @@ export default class UserRepository implements IUserRepository<IUser> {
     return await UserModel.findOne(data).exec()
   }
 
-  async update(filter: FilterQuery<IUser>, data: FilterQuery<IUser>): Promise<IUser | null> {
-    return await UserModel.findOneAndUpdate(filter, { $set: data }, { new: true })
+  async update(filter: FilterQuery<IUser>, data: UpdateData): Promise<IUser | null> {
+    return await UserModel.findOneAndUpdate(filter, data, { new: true })
   }
 }

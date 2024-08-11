@@ -23,9 +23,9 @@ export default class AuthToken implements IAuthToken {
     })
   }
 
-  async generateVerifyEmailToken(username: string): Promise<string> {
-    return await jwt.sign({ username: username }, env.VERIFY_EMAIL.secret, {
-      expiresIn: env.VERIFY_EMAIL.expire,
+  async generateEmailToken(id: string): Promise<string> {
+    return await jwt.sign({ _id: id }, env.EMAIL.secret, {
+      expiresIn: env.EMAIL.expire,
     })
   }
 

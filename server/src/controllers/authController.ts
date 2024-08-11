@@ -37,6 +37,7 @@ export default class AuthController implements IAuthController {
     // add token in cookie
     if (result.success) {
       res.cookie('accessToken', result.accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
+      res.cookie('__l', 1, { ...this.options, path: '/', httpOnly: false })
       res.cookie('refreshToken', result.refreshToken, {
         ...this.options,
         path: '/api/v1/auth/token/refresh',
@@ -56,6 +57,7 @@ export default class AuthController implements IAuthController {
 
     if (success) {
       res.clearCookie('accessToken')
+      res.clearCookie('__l')
       res.clearCookie('refreshToken', { path: '/api/v1/auth/token/refresh' })
     }
 
@@ -63,21 +65,23 @@ export default class AuthController implements IAuthController {
   }
 
   verifyEmail = async (req: Request, res: Response): Promise<void> => {
-    // check if token is valid and user exist
-    const { success, status, message, accessToken, refreshToken } = await this.AuthService.verifyEmail(
-      req.query.token as string,
-    )
+    const emailToken = req.query.token as string
+    const oldAccessToken = req.cookies.accessToken
 
-    if (success) {
-      res.cookie('accessToken', accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
-      res.cookie('refreshToken', refreshToken, {
+    const result = await this.AuthService.verifyEmail(emailToken, oldAccessToken)
+
+    if (result?.accessToken && result.refreshToken) {
+      res.cookie('accessToken', result.accessToken, { ...this.options, path: '/', maxAge: 15 * 60 * 1000 })
+      res.cookie('__l', 1, { ...this.options, path: '/', httpOnly: false })
+      res.cookie('refreshToken', result.refreshToken, {
         ...this.options,
         path: '/api/v1/auth/token/refresh',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
     }
 
-    res.status(status).send({ message: message, success: success })
+    res.cookie('__emailIsVerified', 1, { ...this.options, path: '/', httpOnly: false })
+    res.redirect('http://localhost:5173/dashboard')
   }
 
   refreshToken = async (req: Request, res: Response): Promise<void> => {
@@ -95,5 +99,11 @@ export default class AuthController implements IAuthController {
     }
 
     res.status(status).end()
+  }
+
+  sendPwdForgotToken = async (req: Request, res: Response): Promise<void> => {
+    const email = req.body.email
+    const { status, message } = await this.AuthService.sendPwdForgotToken(email)
+    res.status(status).send({ message: message })
   }
 }
