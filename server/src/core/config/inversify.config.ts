@@ -1,9 +1,7 @@
 import { Container } from 'inversify'
 import TYPES from '../constants/TYPES'
 import AuthRoutes from '@/routes/auth/authRoutes'
-import AuthController from '@/controllers/authController'
 import BaseRoutes from '@/routes/baseRoutes'
-import AuthService from '@/services/authService'
 import PasswordHasher from '@/utils/passwordHasher'
 import UserRepository from '@/repositories/userRepository'
 import AuthToken from '@/utils/authToken'
@@ -12,17 +10,32 @@ import RefreshTokenRepo from '@/repositories/refreshTokenRepo'
 import AuthValidator from '@/validator/authValidator'
 import NodeMailer from '@/utils/mailer'
 import UserRoutes from '@/routes/auth/userRoutes'
-import UserController from '@/controllers/userController'
+import UserAuthService from '@/services/auth/userAuthService'
+import PasswordResetService from '@/services/auth/passwordResetService'
+import TokenManagementService from '@/services/auth/tokenManagementService'
+import UserVerificationService from '@/services/auth/userVerificationService'
+import UserAuthController from '@/controllers/auth/userAuthController'
+import UserAccountController from '@/controllers/auth/userAccountController'
 
 const container = new Container()
 
-container.bind(TYPES.AuthRoutes).to(AuthRoutes)
-container.bind(TYPES.AuthController).to(AuthController)
+//auth routes
 container.bind(TYPES.BaseRoutes).to(BaseRoutes)
-container.bind(TYPES.AuthService).to(AuthService)
+container.bind(TYPES.AuthRoutes).to(AuthRoutes)
 container.bind(TYPES.UserRoutes).to(UserRoutes)
-container.bind(TYPES.UserController).to(UserController)
 
+//user authentication services
+container.bind(TYPES.UserAuthService).to(UserAuthService)
+container.bind(TYPES.PasswordResetService).to(PasswordResetService)
+container.bind(TYPES.TokenManagementService).to(TokenManagementService)
+container.bind(TYPES.UserVerificationService).to(UserVerificationService)
+
+//user authentication Controllers
+container.bind(TYPES.UserAuthController).to(UserAuthController)
+container.bind(TYPES.UserAccountController).to(UserAccountController)
+// container.bind(TYPES.UserPasswordController).to(UserAccountController)
+
+//middleware
 container.bind(TYPES.AuthMiddleware).to(AuthMiddleware)
 
 //Utils

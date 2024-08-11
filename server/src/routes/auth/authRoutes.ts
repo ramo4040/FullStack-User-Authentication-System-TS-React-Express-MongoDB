@@ -1,5 +1,5 @@
 import TYPES from '@/core/constants/TYPES'
-import { IAuthController, IAuthMiddleware, IRoutes } from '@/core/interfaces/IAuth'
+import { IAuthMiddleware, IRoutes, IUserAccountController, IUserAuthController } from '@/core/interfaces/IAuth'
 import { IAuthValidator } from '@/core/interfaces/IValidator'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
@@ -9,7 +9,8 @@ export default class AuthRoutes implements IRoutes {
   public readonly router: Router
 
   constructor(
-    @inject(TYPES.AuthController) private AuthController: IAuthController,
+    @inject(TYPES.UserAuthController) private UserAuthController: IUserAuthController,
+    @inject(TYPES.UserAccountController) private UserAccountController: IUserAccountController,
     @inject(TYPES.AuthValidator) private AuthValidator: IAuthValidator,
     @inject(TYPES.AuthMiddleware) private AuthMiddleware: IAuthMiddleware,
   ) {
@@ -18,12 +19,15 @@ export default class AuthRoutes implements IRoutes {
   }
 
   registerRoutes(): void {
-    this.router.post('/register', this.AuthValidator.validate, this.AuthController.register)
-    this.router.post('/login', this.AuthValidator.validate, this.AuthController.login)
-    this.router.get('/logout', this.AuthMiddleware.authenticateUser, this.AuthController.logout)
-    this.router.get('/verify-email', this.AuthController.verifyEmail)
-    this.router.post('/token/refresh', this.AuthController.refreshToken)
-    this.router.post('/password-reset', this.AuthController.sendPwdForgotToken)
-    this.router.put('/password-reset')
+    // user Authentication routes
+    this.router.post('/register', this.AuthValidator.validate, this.UserAuthController.register)
+    this.router.post('/login', this.AuthValidator.validate, this.UserAuthController.login)
+    this.router.get('/logout', this.AuthMiddleware.authenticateUser, this.UserAuthController.logout)
+
+    this.router.get('/verify-email', this.UserAccountController.verifyEmail)
+    this.router.post('/token/refresh', this.UserAccountController.refreshToken)
+
+    // this.router.post('/password-reset', this.AuthController.sendPwdForgotToken)
+    // this.router.put('/password-reset')
   }
 }

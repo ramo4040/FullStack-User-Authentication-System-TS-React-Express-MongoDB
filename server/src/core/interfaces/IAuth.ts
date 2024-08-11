@@ -1,23 +1,9 @@
 import { NextFunction, type Request, type Response, type Router } from 'express'
 import { IUser } from './IUser'
+import { ObjectId } from 'mongoose'
 
-export interface IAuthController {
-  refreshToken(req: Request, res: Response): Promise<void>
-  register(req: Request, res: Response): Promise<void>
-  login(req: Request, res: Response): Promise<void>
-  logout(req: Request, res: Response): Promise<void>
-  verifyEmail(req: Request, res: Response): Promise<void>
-  sendPwdForgotToken(req: Request, res: Response): Promise<void>
-}
+type AuthRequestHandler = (req: Request, res: Response) => Promise<void>
 
-export interface IAuthService {
-  handleRefreshToken(token: string): Promise<IStatusMessage>
-  register(data: IRegistrationData): Promise<IStatusMessage>
-  login(data: IRegistrationData): Promise<IStatusMessage>
-  logout(userID: string): Promise<IStatusMessage>
-  verifyEmail(verifyToken: string, oldAccessToken: string | null): Promise<Partial<IStatusMessage | void>>
-  sendPwdForgotToken(email: string): Promise<IStatusMessage>
-}
 export interface IRoutes {
   router: Router
   registerRoutes(): void
@@ -41,4 +27,48 @@ export interface IStatusMessage {
 
 export interface IAuthMiddleware {
   authenticateUser(req: Request, res: Response, next: NextFunction): Promise<void>
+}
+
+export interface ITokens {
+  accessToken: string
+  refreshToken: string
+}
+
+// _________________________________________user Auth Controllers
+
+export interface IUserAuthController {
+  register: AuthRequestHandler
+  login: AuthRequestHandler
+  logout: AuthRequestHandler
+  findOne: AuthRequestHandler
+}
+
+export interface IUserAccountController {
+  verifyEmail: AuthRequestHandler
+  refreshToken: AuthRequestHandler
+}
+
+export interface IUserPasswordController {
+  sendPwdForgotToken: AuthRequestHandler
+}
+
+// _________________________________________user auth Services
+export interface IUserVerificationService {
+  verifyEmailToken(verifyToken: string, oldAccessToken: string | null): Promise<Partial<IStatusMessage | void>>
+}
+
+export interface IPasswordResetService {
+  sendPwdForgotToken(email: string): Promise<IStatusMessage>
+}
+
+export interface ITokenManagementService {
+  generateLoginTokens(user: IUser): Promise<ITokens>
+  handleRefreshToken(token: string): Promise<IStatusMessage>
+}
+
+export interface IUserAuthService {
+  register(data: IRegistrationData): Promise<IStatusMessage>
+  login(data: IRegistrationData): Promise<IStatusMessage>
+  logout(userID: string): Promise<IStatusMessage>
+  findOne(id: ObjectId): Promise<IUser | null>
 }

@@ -1,4 +1,3 @@
-import { Request, Response } from 'express'
 import { IRegistrationData } from './IAuth'
 import { Document, ObjectId } from 'mongoose'
 
@@ -26,14 +25,6 @@ export interface IUserRepository<T> {
   saveUser(user: IUser): Promise<IUser>
   findOne(data: Partial<IUser>): Promise<T | null>
   update(filter: Partial<T>, data: UpdateData): Promise<T | null>
-  //   findAll(): Promise<T[]>;
-  //   delete(id: string): Promise<T | null>;
-}
-
-export interface IUserController {
-  findOne(req: Request, res: Response): Promise<void>
-  //   findAll(): Promise<T[]>;
-  //   delete(id: string): Promise<T | null>;
 }
 
 export interface IRefreshTokenRepo<T> {

@@ -1,6 +1,5 @@
 import TYPES from '@/core/constants/TYPES'
-import { IAuthMiddleware, IRoutes } from '@/core/interfaces/IAuth'
-import { IUserController } from '@/core/interfaces/IUser'
+import { IAuthMiddleware, IRoutes, IUserAuthController } from '@/core/interfaces/IAuth'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
 
@@ -10,13 +9,13 @@ export default class UserRoutes implements IRoutes {
 
   constructor(
     @inject(TYPES.AuthMiddleware) private AuthMiddleware: IAuthMiddleware,
-    @inject(TYPES.UserController) private UserController: IUserController,
+    @inject(TYPES.UserAuthController) private UserAuthController: IUserAuthController,
   ) {
     this.router = Router()
     this.registerRoutes()
   }
 
   registerRoutes(): void {
-    this.router.get('/me', this.AuthMiddleware.authenticateUser, this.UserController.findOne)
+    this.router.get('/me', this.AuthMiddleware.authenticateUser, this.UserAuthController.findOne)
   }
 }

@@ -4,15 +4,22 @@ const TYPES = {
   AuthRoutes: Symbol.for('AuthRoutes'),
   UserRoutes: Symbol.for('UserRoutes'),
 
-  //auth
-  AuthController: Symbol.for('AuthController'),
-  AuthService: Symbol.for('AuthService'),
+  //user auth Services
+  UserAuthService: Symbol.for('UserAuthService'),
+  TokenManagementService: Symbol.for('TokenManagementService'),
+  UserVerificationService: Symbol.for('UserVerificationService'),
+  PasswordResetService: Symbol.for('PasswordResetService'),
+
+  //user auth Controllers
+  UserAuthController: Symbol.for('UserAuthController'),
+  UserAccountController: Symbol.for('UserAccountController'),
+  UserPasswordController: Symbol.for('UserPasswordController'),
+
   AuthMiddleware: Symbol.for('AuthMiddleware'),
 
   //user
   UserRepository: Symbol.for('UserRepository'),
   RefreshTokenRepo: Symbol.for('RefreshTokenRepo'),
-  UserController: Symbol.for('UserController'),
 
   //Utils
   PasswordHasher: Symbol.for('PasswordHasher'),

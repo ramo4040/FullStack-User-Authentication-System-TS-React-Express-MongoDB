@@ -1,25 +1,27 @@
-import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
-import { IAuthService, IRegistrationData, IStatusMessage } from '@/core/interfaces/IAuth'
+import { IRegistrationData, IStatusMessage, ITokenManagementService, IUserAuthService } from '@/core/interfaces/IAuth'
 import { IRefreshTokenRepo, IUser, IUserRefreshToken, IUserRepository } from '@/core/interfaces/IUser'
 import { IAuthToken, INodeMailer, IPasswordHasher } from '@/core/interfaces/IUtils'
 import { inject, injectable } from 'inversify'
+import { ObjectId } from 'mongoose'
 
 @injectable()
-export default class AuthService implements IAuthService {
+export default class UserAuthService implements IUserAuthService {
   /**
    * @param PasswordHasher class responsible for password hashing and comparison
    * @param UserRepository abstraction layer to store data
    * @param AuthToken Class provide jwt functionalities
    * @param RefreshTokenRepo abstraction layer to manage RefreshToken data
+   * @param NodeMailer class to send mails
+   * @param TokenManagementService class generate access and refresh token
    */
   constructor(
     @inject(TYPES.PasswordHasher) private PasswordHasher: IPasswordHasher,
-    @inject(TYPES.UserRepository)
-    private UserRepository: IUserRepository<IUser>,
+    @inject(TYPES.UserRepository) private UserRepository: IUserRepository<IUser>,
     @inject(TYPES.AuthToken) private AuthToken: IAuthToken,
     @inject(TYPES.RefreshTokenRepo) private RefreshTokenRepo: IRefreshTokenRepo<IUserRefreshToken>,
     @inject(TYPES.NodeMailer) private NodeMailer: INodeMailer,
+    @inject(TYPES.TokenManagementService) private TokenManagementService: ITokenManagementService,
   ) {}
 
   /**
@@ -80,19 +82,19 @@ export default class AuthService implements IAuthService {
    */
   async login(data: IRegistrationData): Promise<IStatusMessage> {
     const user = await this.UserRepository.findOne({ email: data.email })
+
     try {
       // if user exist
       if (user) {
         //validate password
         const isPasswordValid = await this.PasswordHasher.comparePassword(data.password, user.password)
         if (isPasswordValid) {
-          //generate token
-          const accessToken = await this.AuthToken.generateAccessToken(user)
-          const refreshToken = await this.AuthToken.generateRefreshToken(user)
-          // save refresb token
-          await this.RefreshTokenRepo.create(user._id, refreshToken)
+          //generate tokens
+          const { accessToken, refreshToken } = await this.TokenManagementService.generateLoginTokens(user)
+
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { password, ...withoutPassword } = user.toObject()
+          const { password, verificationToken, ...withoutPassword } = user.toObject()
+
           //send response message
           return {
             success: true,
@@ -123,6 +125,11 @@ export default class AuthService implements IAuthService {
     }
   }
 
+  /**
+   *
+   * @param userID from access token payload
+   * @returns return promise object IStatusMessage.
+   */
   async logout(userID: string): Promise<IStatusMessage> {
     const result = await this.RefreshTokenRepo.deleteByUserId(userID)
 
@@ -143,85 +150,16 @@ export default class AuthService implements IAuthService {
 
   /**
    *
-   * @param verifyToken token generated when user register
-   * @returns return promise object IStatusMessage.
+   * @param id user id from access token payload
+   * @returns return user object .
    */
-  async verifyEmail(verifyToken: string, oldAccessToken: string | null): Promise<Partial<IStatusMessage | void>> {
-    const decodeVerifyToken = await this.AuthToken.verify(verifyToken, env.EMAIL.secret)
-
-    if (!decodeVerifyToken) return
-
-    const user = await this.UserRepository.update(
-      { verificationToken: verifyToken },
-      {
-        $set: { isEmailVerified: true },
-        $unset: { verificationToken: '' },
-      },
-    )
-
-    if (!user || oldAccessToken) return
-
-    const accessToken = await this.AuthToken.generateAccessToken(user as IUser)
-    const refreshToken = await this.AuthToken.generateRefreshToken(user as IUser)
-
-    await this.RefreshTokenRepo.findByUserId(user?.id, refreshToken)
-
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+  async findOne(id: ObjectId): Promise<IUser | null> {
+    const user = await this.UserRepository.findOne({ _id: id })
+    if (user) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, verificationToken, ...withoutPassword } = user.toObject()
+      return withoutPassword
     }
-  }
-
-  async handleRefreshToken(token: string): Promise<IStatusMessage> {
-    const refreshToken = await this.AuthToken.verify(token, env.REFRESH_TOKEN.secret)
-
-    if (!refreshToken) {
-      return {
-        status: 401,
-        success: false,
-      }
-    }
-
-    const newRefreshToken = await this.AuthToken.generateRefreshToken(refreshToken)
-    const isRefreshTokenValid = await this.RefreshTokenRepo.findByUserId(refreshToken.userId, newRefreshToken)
-
-    // check if refresh token exist
-    if (isRefreshTokenValid) {
-      // Generate a new access
-      const newAccessToken = await this.AuthToken.generateAccessToken(refreshToken)
-
-      return {
-        success: true,
-        status: 200,
-        refreshToken: newRefreshToken,
-        accessToken: newAccessToken,
-      }
-    }
-
-    // if (refresh - access) tokens not valid
-    return {
-      status: 401,
-      success: false,
-    }
-  }
-
-  async sendPwdForgotToken(email: string): Promise<IStatusMessage> {
-    const isEmailValid = await this.UserRepository.findOne({ email: email })
-
-    if (isEmailValid) {
-      const token = await this.AuthToken.generateEmailToken(isEmailValid.id)
-      await this.NodeMailer.sendForgotPwdEmail(email, token)
-
-      return {
-        success: true,
-        status: 200,
-        message: 'Please check your email',
-      }
-    }
-    return {
-      success: false,
-      status: 404,
-      message: 'User email not found ',
-    }
+    return null
   }
 }
