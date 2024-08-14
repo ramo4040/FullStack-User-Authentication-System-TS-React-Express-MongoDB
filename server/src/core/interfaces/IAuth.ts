@@ -23,6 +23,7 @@ export interface IStatusMessage {
   isEmailVerified?: boolean
   accessToken?: string
   refreshToken?: string
+  forgotPwdToken?: string
 }
 
 export interface IAuthMiddleware {
@@ -49,7 +50,8 @@ export interface IUserAccountController {
 }
 
 export interface IUserPasswordController {
-  sendPwdForgotToken: AuthRequestHandler
+  forgotPassword: AuthRequestHandler
+  passwordReset: AuthRequestHandler
 }
 
 // _________________________________________user auth Services
@@ -59,6 +61,8 @@ export interface IUserVerificationService {
 
 export interface IPasswordResetService {
   sendPwdForgotToken(email: string): Promise<IStatusMessage>
+  verifyToken(token: string): Promise<IStatusMessage>
+  updatePassword(userId: string, newPwd: string): Promise<IUser | null>
 }
 
 export interface ITokenManagementService {

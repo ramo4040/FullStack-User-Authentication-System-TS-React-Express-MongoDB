@@ -1,7 +1,7 @@
 import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
 import { IStatusMessage, ITokenManagementService, ITokens } from '@/core/interfaces/IAuth'
-import { IRefreshTokenRepo, IUser, IUserRefreshToken } from '@/core/interfaces/IUser'
+import { ITokenRepo, IUser, IUserToken } from '@/core/interfaces/IUser'
 import { IAuthToken } from '@/core/interfaces/IUtils'
 import { inject, injectable } from 'inversify'
 
@@ -9,11 +9,11 @@ import { inject, injectable } from 'inversify'
 export default class TokenManagementService implements ITokenManagementService {
   /**
    * @param AuthToken responsible for generating and verifying tokens.
-   * @param RefreshTokenRepo An instance of the IRefreshTokenRepo interface, responsible for managing refresh tokens.
+   * @param RefreshTokenRepo An instance of the ITokenRepo interface, responsible for managing refresh tokens.
    */
   constructor(
     @inject(TYPES.AuthToken) private AuthToken: IAuthToken,
-    @inject(TYPES.RefreshTokenRepo) private RefreshTokenRepo: IRefreshTokenRepo<IUserRefreshToken>,
+    @inject(TYPES.RefreshTokenRepo) private RefreshTokenRepo: ITokenRepo<IUserToken>,
   ) {}
 
   /**

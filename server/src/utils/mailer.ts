@@ -51,7 +51,7 @@ export default class NodeMailer implements INodeMailer {
   private async sendMail(options: object): Promise<void> {
     await this.emailTransporter.sendMail(options, (error) => {
       if (error) {
-        console.log(error)
+        throw error
       }
     })
   }

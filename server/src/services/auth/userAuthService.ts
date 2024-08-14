@@ -1,6 +1,6 @@
 import TYPES from '@/core/constants/TYPES'
 import { IRegistrationData, IStatusMessage, ITokenManagementService, IUserAuthService } from '@/core/interfaces/IAuth'
-import { IRefreshTokenRepo, IUser, IUserRefreshToken, IUserRepository } from '@/core/interfaces/IUser'
+import { ITokenRepo, IUser, IUserToken, IUserRepository } from '@/core/interfaces/IUser'
 import { IAuthToken, INodeMailer, IPasswordHasher } from '@/core/interfaces/IUtils'
 import { inject, injectable } from 'inversify'
 import { ObjectId } from 'mongoose'
@@ -19,7 +19,7 @@ export default class UserAuthService implements IUserAuthService {
     @inject(TYPES.PasswordHasher) private PasswordHasher: IPasswordHasher,
     @inject(TYPES.UserRepository) private UserRepository: IUserRepository<IUser>,
     @inject(TYPES.AuthToken) private AuthToken: IAuthToken,
-    @inject(TYPES.RefreshTokenRepo) private RefreshTokenRepo: IRefreshTokenRepo<IUserRefreshToken>,
+    @inject(TYPES.RefreshTokenRepo) private RefreshTokenRepo: ITokenRepo<IUserToken>,
     @inject(TYPES.NodeMailer) private NodeMailer: INodeMailer,
     @inject(TYPES.TokenManagementService) private TokenManagementService: ITokenManagementService,
   ) {}

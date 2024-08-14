@@ -1,5 +1,11 @@
 import TYPES from '@/core/constants/TYPES'
-import { IAuthMiddleware, IRoutes, IUserAccountController, IUserAuthController } from '@/core/interfaces/IAuth'
+import {
+  IAuthMiddleware,
+  IRoutes,
+  IUserAccountController,
+  IUserAuthController,
+  IUserPasswordController,
+} from '@/core/interfaces/IAuth'
 import { IAuthValidator } from '@/core/interfaces/IValidator'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
@@ -11,6 +17,7 @@ export default class AuthRoutes implements IRoutes {
   constructor(
     @inject(TYPES.UserAuthController) private UserAuthController: IUserAuthController,
     @inject(TYPES.UserAccountController) private UserAccountController: IUserAccountController,
+    @inject(TYPES.UserPasswordController) private UserPasswordController: IUserPasswordController,
     @inject(TYPES.AuthValidator) private AuthValidator: IAuthValidator,
     @inject(TYPES.AuthMiddleware) private AuthMiddleware: IAuthMiddleware,
   ) {
@@ -27,7 +34,7 @@ export default class AuthRoutes implements IRoutes {
     this.router.get('/verify-email', this.UserAccountController.verifyEmail)
     this.router.post('/token/refresh', this.UserAccountController.refreshToken)
 
-    // this.router.post('/password-reset', this.AuthController.sendPwdForgotToken)
-    // this.router.put('/password-reset')
+    this.router.post('/forgot-password', this.UserPasswordController.forgotPassword)
+    this.router.patch('/reset-password', this.UserPasswordController.passwordReset)
   }
 }

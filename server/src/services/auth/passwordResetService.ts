@@ -1,13 +1,16 @@
+import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
 import { IPasswordResetService, IStatusMessage } from '@/core/interfaces/IAuth'
-import { IUser, IUserRepository } from '@/core/interfaces/IUser'
+import { ITokenRepo, IUser, IUserRepository, IUserToken } from '@/core/interfaces/IUser'
 import { IAuthToken, INodeMailer } from '@/core/interfaces/IUtils'
 import { inject, injectable } from 'inversify'
+import { ObjectId } from 'mongoose'
 
 @injectable()
 export default class PasswordResetService implements IPasswordResetService {
   constructor(
     @inject(TYPES.UserRepository) private UserRepository: IUserRepository<IUser>,
+    @inject(TYPES.ForgotPwdRepo) private ForgotPwdRepo: ITokenRepo<IUserToken>,
     @inject(TYPES.AuthToken) private AuthToken: IAuthToken,
     @inject(TYPES.NodeMailer) private NodeMailer: INodeMailer,
   ) {}
@@ -17,12 +20,23 @@ export default class PasswordResetService implements IPasswordResetService {
 
     if (isEmailValid) {
       const token = await this.AuthToken.generateEmailToken(isEmailValid.id)
-      await this.NodeMailer.sendForgotPwdEmail(email, token)
 
-      return {
-        success: true,
-        status: 200,
-        message: 'Please check your email',
+      try {
+        await this.NodeMailer.sendForgotPwdEmail(email, token)
+        await this.ForgotPwdRepo.create(isEmailValid._id as ObjectId, token)
+
+        return {
+          success: true,
+          status: 200,
+          forgotPwdToken: token,
+          message: 'Please check your email',
+        }
+      } catch (error) {
+        return {
+          success: false,
+          status: 500,
+          message: 'An error ocured ./',
+        }
       }
     }
     return {
@@ -30,5 +44,37 @@ export default class PasswordResetService implements IPasswordResetService {
       status: 404,
       message: 'User email not found ',
     }
+  }
+
+  async verifyToken(token: string): Promise<IStatusMessage> {
+    const decodeToken = await this.AuthToken.verify(token, env.EMAIL.secret)
+
+    if (!decodeToken) {
+      return {
+        success: false,
+        status: 404,
+        message: 'Token not valid',
+      }
+    }
+
+    const isValid = await this.ForgotPwdRepo.deleteByUserId(decodeToken._id)
+
+    if (!isValid) {
+      return {
+        success: false,
+        status: 400,
+        message: 'Token not valid',
+      }
+    }
+
+    return {
+      success: true,
+      status: 200,
+      user: decodeToken._id as Partial<IUser>,
+    }
+  }
+
+  async updatePassword(userId: string, newPwd: string): Promise<IUser | null> {
+    return await this.UserRepository.update({ _id: userId }, { $set: { password: newPwd } })
   }
 }

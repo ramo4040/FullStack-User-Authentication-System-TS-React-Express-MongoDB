@@ -16,6 +16,8 @@ import TokenManagementService from '@/services/auth/tokenManagementService'
 import UserVerificationService from '@/services/auth/userVerificationService'
 import UserAuthController from '@/controllers/auth/userAuthController'
 import UserAccountController from '@/controllers/auth/userAccountController'
+import UserPasswordController from '@/controllers/auth/userPasswordController'
+import ForgotPwdRepo from '@/repositories/forgotPwdRepo'
 
 const container = new Container()
 
@@ -33,7 +35,7 @@ container.bind(TYPES.UserVerificationService).to(UserVerificationService)
 //user authentication Controllers
 container.bind(TYPES.UserAuthController).to(UserAuthController)
 container.bind(TYPES.UserAccountController).to(UserAccountController)
-// container.bind(TYPES.UserPasswordController).to(UserAccountController)
+container.bind(TYPES.UserPasswordController).to(UserPasswordController)
 
 //middleware
 container.bind(TYPES.AuthMiddleware).to(AuthMiddleware)
@@ -46,6 +48,7 @@ container.bind(TYPES.NodeMailer).to(NodeMailer)
 //user
 container.bind(TYPES.UserRepository).to(UserRepository)
 container.bind(TYPES.RefreshTokenRepo).to(RefreshTokenRepo)
+container.bind(TYPES.ForgotPwdRepo).to(ForgotPwdRepo)
 
 // Validator
 container.bind(TYPES.AuthValidator).to(AuthValidator)

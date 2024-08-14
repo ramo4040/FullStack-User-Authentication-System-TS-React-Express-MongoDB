@@ -2,7 +2,7 @@ import { IRegistrationData } from './IAuth'
 import { Document, ObjectId } from 'mongoose'
 
 export interface IUser extends Document {
-  _id: ObjectId
+  _id: ObjectId | string
   username: string
   email: string
   verificationToken: string | undefined
@@ -14,10 +14,10 @@ export interface UpdateData {
   $unset?: { [key in keyof IUser]?: '' }
 }
 
-export interface IUserRefreshToken extends Document {
+export interface IUserToken extends Document {
   _id: ObjectId
   userId: ObjectId
-  refreshToken: string
+  token: string
 }
 
 export interface IUserRepository<T> {
@@ -27,8 +27,8 @@ export interface IUserRepository<T> {
   update(filter: Partial<T>, data: UpdateData): Promise<T | null>
 }
 
-export interface IRefreshTokenRepo<T> {
-  create(userId: ObjectId, refreshToken: string): Promise<void>
-  findByUserId(userId: string | ObjectId, newRefreshToken: string): Promise<T | null>
-  deleteByUserId(userId: string): Promise<IUserRefreshToken | null>
+export interface ITokenRepo<T> {
+  create(userId: ObjectId, token: string): Promise<void>
+  findByUserId(userId: string | ObjectId, token: string): Promise<T | null>
+  deleteByUserId(userId: string | ObjectId): Promise<IUserToken | null>
 }
