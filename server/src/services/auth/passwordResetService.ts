@@ -2,7 +2,7 @@ import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
 import { IPasswordResetService, IStatusMessage } from '@/core/interfaces/IAuth'
 import { ITokenRepo, IUser, IUserRepository, IUserToken } from '@/core/interfaces/IUser'
-import { IAuthToken, INodeMailer } from '@/core/interfaces/IUtils'
+import { IAuthToken, INodeMailer, IPasswordHasher } from '@/core/interfaces/IUtils'
 import { inject, injectable } from 'inversify'
 import { ObjectId } from 'mongoose'
 
@@ -11,6 +11,7 @@ export default class PasswordResetService implements IPasswordResetService {
   constructor(
     @inject(TYPES.UserRepository) private UserRepository: IUserRepository<IUser>,
     @inject(TYPES.ForgotPwdRepo) private ForgotPwdRepo: ITokenRepo<IUserToken>,
+    @inject(TYPES.PasswordHasher) private PasswordHasher: IPasswordHasher,
     @inject(TYPES.AuthToken) private AuthToken: IAuthToken,
     @inject(TYPES.NodeMailer) private NodeMailer: INodeMailer,
   ) {}
@@ -22,7 +23,7 @@ export default class PasswordResetService implements IPasswordResetService {
       const token = await this.AuthToken.generateEmailToken(isEmailValid.id)
 
       try {
-        await this.NodeMailer.sendForgotPwdEmail(email, token)
+        await this.NodeMailer.sendForgotPwdEmail(email)
         await this.ForgotPwdRepo.create(isEmailValid._id as ObjectId, token)
 
         return {
@@ -35,7 +36,7 @@ export default class PasswordResetService implements IPasswordResetService {
         return {
           success: false,
           status: 500,
-          message: 'An error ocured ./',
+          message: 'An error ocured .',
         }
       }
     }
@@ -75,6 +76,7 @@ export default class PasswordResetService implements IPasswordResetService {
   }
 
   async updatePassword(userId: string, newPwd: string): Promise<IUser | null> {
-    return await this.UserRepository.update({ _id: userId }, { $set: { password: newPwd } })
+    const newHashPwd = await this.PasswordHasher.hashPassword(newPwd)
+    return await this.UserRepository.update({ _id: userId }, { $set: { password: newHashPwd } })
   }
 }

@@ -21,5 +21,5 @@ export interface IJwtPayload extends IUser {
 
 export interface INodeMailer {
   sendVerificationEmail(email: string, token: string): Promise<void>
-  sendForgotPwdEmail(email: string, token: string): Promise<void>
+  sendForgotPwdEmail(email: string): Promise<void>
 }

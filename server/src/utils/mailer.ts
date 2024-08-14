@@ -35,8 +35,8 @@ export default class NodeMailer implements INodeMailer {
     this.sendMail(mailoptions)
   }
 
-  async sendForgotPwdEmail(email: string, token: string): Promise<void> {
-    const verificationUrl = `http://localhost:5173/password-reset?token=${token}`
+  async sendForgotPwdEmail(email: string): Promise<void> {
+    const verificationUrl = `http://localhost:5173/reset-password`
 
     const mailoptions = {
       from: env.MAILER.user,

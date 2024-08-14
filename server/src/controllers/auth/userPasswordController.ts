@@ -17,13 +17,14 @@ export default class UserPasswordController implements IUserPasswordController {
 
   forgotPassword = async (req: Request, res: Response): Promise<void> => {
     const email = req.body.email
-    const { status, message, forgotPwdToken } = await this.PasswordResetService.sendPwdForgotToken(email)
 
-    if (status) {
+    const { success, status, message, forgotPwdToken } = await this.PasswordResetService.sendPwdForgotToken(email)
+
+    if (success) {
       res.cookie('forgotPwdToken', forgotPwdToken, this.options)
     }
 
-    res.status(status).send({ message: message })
+    res.status(status).send({ message, success })
   }
 
   passwordReset = async (req: Request, res: Response): Promise<void> => {
