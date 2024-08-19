@@ -29,6 +29,7 @@ export default class UserVerificationService implements IUserVerificationService
         $set: { isEmailVerified: true },
         $unset: { verificationToken: '' },
       },
+      { new: true },
     )
 
     if (!user || oldAccessToken) return

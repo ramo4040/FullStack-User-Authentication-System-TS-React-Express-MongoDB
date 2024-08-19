@@ -9,11 +9,13 @@ const TYPES = {
   TokenManagementService: Symbol.for('TokenManagementService'),
   UserVerificationService: Symbol.for('UserVerificationService'),
   PasswordResetService: Symbol.for('PasswordResetService'),
+  GoogleAuthService: Symbol.for('GoogleAuthService'),
 
   //user auth Controllers
   UserAuthController: Symbol.for('UserAuthController'),
   UserAccountController: Symbol.for('UserAccountController'),
   UserPasswordController: Symbol.for('UserPasswordController'),
+  GoogleAuthController: Symbol.for('GoogleAuthController'),
 
   AuthMiddleware: Symbol.for('AuthMiddleware'),
 

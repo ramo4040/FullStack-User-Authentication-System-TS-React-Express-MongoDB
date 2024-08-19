@@ -20,6 +20,7 @@
     "dotenv": "^16.4.5",
     "env-var": "^7.5.0",
     "express": "^4.19.2",
+    "google-auth-library": "^9.13.0",
     "inversify": "^6.0.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",

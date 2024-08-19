@@ -18,6 +18,8 @@ import UserAuthController from '@/controllers/auth/userAuthController'
 import UserAccountController from '@/controllers/auth/userAccountController'
 import UserPasswordController from '@/controllers/auth/userPasswordController'
 import ForgotPwdRepo from '@/repositories/forgotPwdRepo'
+import GoogleAuthService from '@/services/auth/googleAuthService'
+import GoogleAuthController from '@/controllers/auth/googleAuthController'
 
 const container = new Container()
 
@@ -31,11 +33,13 @@ container.bind(TYPES.UserAuthService).to(UserAuthService)
 container.bind(TYPES.PasswordResetService).to(PasswordResetService)
 container.bind(TYPES.TokenManagementService).to(TokenManagementService)
 container.bind(TYPES.UserVerificationService).to(UserVerificationService)
+container.bind(TYPES.GoogleAuthService).to(GoogleAuthService)
 
 //user authentication Controllers
 container.bind(TYPES.UserAuthController).to(UserAuthController)
 container.bind(TYPES.UserAccountController).to(UserAccountController)
 container.bind(TYPES.UserPasswordController).to(UserPasswordController)
+container.bind(TYPES.GoogleAuthController).to(GoogleAuthController)
 
 //middleware
 container.bind(TYPES.AuthMiddleware).to(AuthMiddleware)

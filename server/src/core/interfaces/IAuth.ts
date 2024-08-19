@@ -9,14 +9,16 @@ export interface IRoutes {
   registerRoutes(): void
 }
 export interface IRegistrationData {
+  googleId: string
   username: string
   email: string
-  password: string
-  confirmPassword: string
-  verificationToken?: string
+  password?: string | null
+  confirmPassword?: string
+  isEmailVerified?: boolean
 }
+
 export interface IStatusMessage {
-  success?: boolean
+  success: boolean
   status: number
   message?: string
   user?: Partial<IUser> | null
@@ -54,6 +56,10 @@ export interface IUserPasswordController {
   passwordReset: AuthRequestHandler
 }
 
+export interface IGoogleAuthController {
+  authenticate: AuthRequestHandler
+  callback: AuthRequestHandler
+}
 // _________________________________________user auth Services
 export interface IUserVerificationService {
   verifyEmailToken(verifyToken: string, oldAccessToken: string | null): Promise<Partial<IStatusMessage | void>>
@@ -75,4 +81,9 @@ export interface IUserAuthService {
   login(data: IRegistrationData): Promise<IStatusMessage>
   logout(userID: string): Promise<IStatusMessage>
   findOne(id: ObjectId): Promise<IUser | null>
+}
+
+export interface IGoogleAuthService {
+  authenticate(): string
+  callback(code: string): Promise<IStatusMessage | void>
 }

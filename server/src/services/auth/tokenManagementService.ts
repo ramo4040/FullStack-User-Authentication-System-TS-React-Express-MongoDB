@@ -51,7 +51,7 @@ export default class TokenManagementService implements ITokenManagementService {
     }
 
     const newRefreshToken = await this.AuthToken.generateRefreshToken(refreshToken)
-    const isRefreshTokenValid = await this.RefreshTokenRepo.findByUserId(refreshToken.userId, newRefreshToken)
+    const isRefreshTokenValid = await this.RefreshTokenRepo.findByUserId(refreshToken._id, newRefreshToken)
 
     // check if refresh token exist
     if (isRefreshTokenValid) {

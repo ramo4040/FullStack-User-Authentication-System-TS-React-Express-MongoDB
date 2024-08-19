@@ -77,6 +77,6 @@ export default class PasswordResetService implements IPasswordResetService {
 
   async updatePassword(userId: string, newPwd: string): Promise<IUser | null> {
     const newHashPwd = await this.PasswordHasher.hashPassword(newPwd)
-    return await this.UserRepository.update({ _id: userId }, { $set: { password: newHashPwd } })
+    return await this.UserRepository.update({ _id: userId }, { $set: { password: newHashPwd } }, { new: true })
   }
 }

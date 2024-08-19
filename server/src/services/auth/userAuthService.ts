@@ -33,7 +33,7 @@ export default class UserAuthService implements IUserAuthService {
   async register(data: IRegistrationData): Promise<IStatusMessage> {
     try {
       // hash password
-      data.password = await this.PasswordHasher.hashPassword(data.password)
+      data.password = await this.PasswordHasher.hashPassword(data.password as string)
       // create user model
       const user = await this.UserRepository.createUserModel(data)
       // create verification token
@@ -87,7 +87,7 @@ export default class UserAuthService implements IUserAuthService {
       // if user exist
       if (user) {
         //validate password
-        const isPasswordValid = await this.PasswordHasher.comparePassword(data.password, user.password)
+        const isPasswordValid = await this.PasswordHasher.comparePassword(data.password as string, user.password)
         if (isPasswordValid) {
           //generate tokens
           const { accessToken, refreshToken } = await this.TokenManagementService.generateLoginTokens(user)

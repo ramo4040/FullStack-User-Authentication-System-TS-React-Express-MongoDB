@@ -22,5 +22,10 @@ const env = {
     user: get('AUTH_EMAIL_USER').required().asEmailString(),
     pass: get('AUTH_EMAIL_PASS').required().asString(),
   },
+  GOOGLE: {
+    CLIENT_ID: get('GOOGLE_CLIENT_ID').required().asString(),
+    CLIENT_SECRET: get('GOOGLE_CLIENT_SECRET').required().asString(),
+    REDIRECT_URI: get('GOOGLE_REDIRECT_URI').required().asUrlString(),
+  },
 }
 export default env

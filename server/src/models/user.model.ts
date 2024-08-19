@@ -3,19 +3,20 @@ import { Schema, model, Model } from 'mongoose'
 
 const userSchema = new Schema<IUser>(
   {
+    googleId: { type: String, unique: true, default: null },
+
     username: { type: String, unique: true, index: true, required: true },
+
     email: { type: String, unique: true, index: true, required: true },
 
     verificationToken: {
-      type: String || undefined,
-      default: null,
-    },
-    isEmailVerified: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: undefined,
     },
 
-    password: { type: String, required: true },
+    isEmailVerified: { type: Boolean, default: false },
+
+    password: { type: String, required: false, default: null },
   },
   { collection: 'Users' },
 )
