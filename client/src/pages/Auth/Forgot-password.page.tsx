@@ -3,8 +3,8 @@ import { LuFingerprint } from 'react-icons/lu'
 import { IoIosArrowBack } from 'react-icons/io'
 
 import { useState } from 'react'
-import { ForgotPasswordService } from '../services/authService'
-import AuthForm from '../components/Forms/AuthFom'
+import { ForgotPasswordService } from '../../services/authService'
+import AuthForm from '../../components/Forms/AuthFom'
 
 const ForgotPasswordPage = () => {
   const [error, setError] = useState<string>('')

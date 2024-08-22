@@ -1,27 +1,66 @@
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { RegisterService } from '../services/authService'
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
-import AuthForm from '../components/Forms/AuthFom'
-import Button from '../components/Buttons/Btn'
+import { useEffect, useState } from 'react'
+import { toast, Bounce } from 'react-toastify'
+import { useCookies } from 'react-cookie'
+import useAuth from '../../hooks/useAuth'
+import AuthForm from '../../components/Forms/AuthFom'
+import Button from '../../components/Buttons/Btn'
+import { LoginService } from '../../services/authService'
 
-const RegisterPage = () => {
+const LoginPage = () => {
+  const navigate = useNavigate()
   const [, setError] = useState<string | undefined>('')
+  const { setAuthenticated, setIsEmailVerified } = useAuth()
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
-  const navigate = useNavigate()
+  const [cookie, , removeCookie] = useCookies(['__emailIsVerified'])
+
+  useEffect(() => {
+    const notify = (message: string) => {
+      toast(message, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+        type: 'error',
+      })
+    }
+
+    if (cookie.__emailIsVerified) {
+      notify(
+        'The verification link is invalid or has expired. Please log in to check your account status or request a new verification link.',
+      )
+      removeCookie('__emailIsVerified')
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData(e.target as HTMLFormElement)
-    const response = await RegisterService(formData)
 
-    if (response.success) {
-      navigate('/login')
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+    const userResponse = await LoginService(formData)
+
+    if (userResponse.success && !userResponse.user?.isEmailVerified) {
+      setAuthenticated(true)
+      navigate('/verify-email')
       return
     }
 
-    setError(response.message)
+    if (userResponse.success) {
+      setAuthenticated(true)
+      setIsEmailVerified(true)
+      navigate('/dashboard')
+      return
+    }
+
+    setError(userResponse.message)
   }
 
   const handleGoogleSubmit = async () => {
@@ -31,22 +70,10 @@ const RegisterPage = () => {
 
   return (
     <AuthForm
-      description="Sign up and start exploring!"
+      description="Please fill your detail to access your account."
       onSubmit={handleSubmit}
     >
       {/**group inputs */}
-
-      <div className="group-input">
-        <label htmlFor="email">Username</label>
-        <input
-          type="text"
-          placeholder="jhon.doe"
-          id="username"
-          name="username"
-          className="input-auth"
-          required
-        />
-      </div>
 
       <div className="group-input">
         <label htmlFor="email">Email</label>
@@ -59,9 +86,11 @@ const RegisterPage = () => {
           required
         />
       </div>
-
       <div className="group-input">
-        <label htmlFor="password">Password</label>
+        <div className="forgot-password">
+          <label htmlFor="password">Password</label>
+          <Link to="/forgot-password">Forgot password ?</Link>
+        </div>
         <div className="group-input-icone">
           <input
             type={togglePwd ? 'text' : 'password'}
@@ -79,19 +108,8 @@ const RegisterPage = () => {
         </div>
       </div>
 
-      <div className="group-input">
-        <label htmlFor="cPassword">Confirm password</label>
-        <input
-          type={togglePwd ? 'text' : 'password'}
-          placeholder="•••••••••"
-          id="cPassword"
-          name="confirmPassword"
-          className="input-auth"
-          required
-        />
-      </div>
-
       {/** submit buttons */}
+
       <div className="group-btn">
         <Button type="submit">Sign in</Button>
 
@@ -125,11 +143,11 @@ const RegisterPage = () => {
         </Button>
 
         <p>
-          Already has an account? <Link to="/login">Sign In</Link>
+          Don't have an account? <Link to="/register">Sign Up</Link>
         </p>
       </div>
     </AuthForm>
   )
 }
 
-export default RegisterPage
+export default LoginPage

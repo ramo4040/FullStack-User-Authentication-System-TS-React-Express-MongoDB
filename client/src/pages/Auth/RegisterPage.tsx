@@ -1,66 +1,27 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Button from '../components/Buttons/Btn'
-import AuthForm from '../components/Forms/AuthFom'
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
-import { useEffect, useState } from 'react'
-import { LoginService } from '../services/authService'
-import useAuth from '../hooks/useAuth'
-import { toast, Bounce } from 'react-toastify'
-import { useCookies } from 'react-cookie'
+import AuthForm from '../../components/Forms/AuthFom'
+import { RegisterService } from '../../services/authService'
+import Button from '../../components/Buttons/Btn'
 
-const LoginPage = () => {
-  const navigate = useNavigate()
+const RegisterPage = () => {
   const [, setError] = useState<string | undefined>('')
-  const { setAuthenticated, setIsEmailVerified } = useAuth()
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
-  const [cookie, , removeCookie] = useCookies(['__emailIsVerified'])
-
-  useEffect(() => {
-    const notify = (message: string) => {
-      toast(message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-        type: 'error',
-      })
-    }
-
-    if (cookie.__emailIsVerified) {
-      notify(
-        'The verification link is invalid or has expired. Please log in to check your account status or request a new verification link.',
-      )
-      removeCookie('__emailIsVerified')
-    }
-  }, [])
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const formData = new FormData(e.target as HTMLFormElement)
+    const response = await RegisterService(formData)
 
-    const form = e.target as HTMLFormElement
-    const formData = new FormData(form)
-    const userResponse = await LoginService(formData)
-
-    if (userResponse.success && !userResponse.user?.isEmailVerified) {
-      setAuthenticated(true)
-      navigate('/verify-email')
+    if (response.success) {
+      navigate('/login')
       return
     }
 
-    if (userResponse.success) {
-      setAuthenticated(true)
-      setIsEmailVerified(true)
-      navigate('/dashboard')
-      return
-    }
-
-    setError(userResponse.message)
+    setError(response.message)
   }
 
   const handleGoogleSubmit = async () => {
@@ -70,10 +31,22 @@ const LoginPage = () => {
 
   return (
     <AuthForm
-      description="Please fill your detail to access your account."
+      description="Sign up and start exploring!"
       onSubmit={handleSubmit}
     >
       {/**group inputs */}
+
+      <div className="group-input">
+        <label htmlFor="email">Username</label>
+        <input
+          type="text"
+          placeholder="jhon.doe"
+          id="username"
+          name="username"
+          className="input-auth"
+          required
+        />
+      </div>
 
       <div className="group-input">
         <label htmlFor="email">Email</label>
@@ -86,11 +59,9 @@ const LoginPage = () => {
           required
         />
       </div>
+
       <div className="group-input">
-        <div className="forgot-password">
-          <label htmlFor="password">Password</label>
-          <Link to="/forgot-password">Forgot password ?</Link>
-        </div>
+        <label htmlFor="password">Password</label>
         <div className="group-input-icone">
           <input
             type={togglePwd ? 'text' : 'password'}
@@ -108,8 +79,19 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/** submit buttons */}
+      <div className="group-input">
+        <label htmlFor="cPassword">Confirm password</label>
+        <input
+          type={togglePwd ? 'text' : 'password'}
+          placeholder="•••••••••"
+          id="cPassword"
+          name="confirmPassword"
+          className="input-auth"
+          required
+        />
+      </div>
 
+      {/** submit buttons */}
       <div className="group-btn">
         <Button type="submit">Sign in</Button>
 
@@ -143,11 +125,11 @@ const LoginPage = () => {
         </Button>
 
         <p>
-          Don't have an account? <Link to="/register">Sign Up</Link>
+          Already has an account? <Link to="/login">Sign In</Link>
         </p>
       </div>
     </AuthForm>
   )
 }
 
-export default LoginPage
+export default RegisterPage

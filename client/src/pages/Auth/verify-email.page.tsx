@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import img from '../assets/images/verify-email-logo.png'
+import img from '../../assets/images/verify-email-logo.png'
 import { toast, Bounce } from 'react-toastify'
 import { useCookies } from 'react-cookie'
-import Button from '../components/Buttons/Btn'
+import Button from '../../components/Buttons/Btn'
 
 const VerifyEmailPage = () => {
   const [cookie, , removeCookie] = useCookies(['__emailIsVerified'])

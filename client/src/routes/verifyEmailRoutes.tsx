@@ -1,11 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
-interface VerifyEmailRoutesProps {
-  children: React.ReactNode
-}
-
-function VerifyEmailRoutes({ children }: VerifyEmailRoutesProps) {
+function VerifyEmailRoutes({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isEmailVerified } = useAuth()
 
   if (isEmailVerified) {

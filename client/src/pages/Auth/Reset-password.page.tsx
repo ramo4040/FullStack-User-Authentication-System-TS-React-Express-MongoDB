@@ -1,9 +1,10 @@
-import AuthForm from '../components/Forms/AuthFom'
+import AuthForm from '../../components/Forms/AuthFom'
 import React, { useState } from 'react'
 import { MdPassword } from 'react-icons/md'
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
-import { ResetPasswordService } from '../services/authService'
+import { ResetPasswordService } from '../../services/authService'
+
 const ResetPasswordPage = () => {
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
