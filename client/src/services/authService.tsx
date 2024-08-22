@@ -6,7 +6,7 @@ export const LoginService = async (
   formdata: FormData,
 ): Promise<IStatusMessage> => {
   try {
-    const res = await _apiClient.post<IStatusMessage>('/login', formdata)
+    const res = await _apiClient.post<IStatusMessage>('/auth/login', formdata)
     return res.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) return error.response.data
@@ -21,7 +21,10 @@ export const RegisterService = async (
   formdata: FormData,
 ): Promise<IStatusMessage> => {
   try {
-    const res = await _apiClient.post<IStatusMessage>('/register', formdata)
+    const res = await _apiClient.post<IStatusMessage>(
+      '/auth/register',
+      formdata,
+    )
     return res.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) return error.response.data
@@ -36,7 +39,7 @@ export const RefreshAccessToken = async (): Promise<
   AxiosResponse | undefined
 > => {
   try {
-    const res = await _apiClient.post('/token/refresh')
+    const res = await _apiClient.post('/auth/token/refresh')
     return res
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) return error.response.data
@@ -44,16 +47,46 @@ export const RefreshAccessToken = async (): Promise<
 }
 
 export const verifyEmailService = async (
-  token: string,
+  token: string | null,
 ): Promise<IStatusMessage> => {
   try {
-    const res = await _apiClient.get(`/verify-email?token=${token}`)
+    const res = await _apiClient.patch(`/auth/email-status?token=${token}`)
     return res.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) return error.response.data
     return {
       success: false,
       message: 'error',
+    }
+  }
+}
+
+export const ForgotPasswordService = async (
+  formdata: FormData,
+): Promise<IStatusMessage> => {
+  try {
+    const res = await _apiClient.post('/auth/forgot-password', formdata)
+    return res.data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) return error.response.data
+    return {
+      success: false,
+      message: 'error',
+    }
+  }
+}
+
+export const ResetPasswordService = async (
+  formdata: FormData,
+): Promise<IStatusMessage> => {
+  try {
+    const res = await _apiClient.patch('/auth/reset-password', formdata)
+    return res.data
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) return error.response.data
+    return {
+      success: false,
+      message: 'An error occurred ',
     }
   }
 }

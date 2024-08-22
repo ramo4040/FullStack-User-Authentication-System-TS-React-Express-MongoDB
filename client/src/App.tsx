@@ -1,32 +1,43 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
-import AuthGuard from './components/Auth/AuthGuard'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import VerifyEmailPage from './pages/verify-email.page'
+import PublicRoutes from './routes/PublicRoutes'
+import PrivateRoutes from './routes/PrivateRoutes'
+import VerifyEmailRoutes from './routes/verifyEmailRoutes'
+import DashBoardPage from './pages/DahsboardPage'
+import { ToastContainer } from 'react-toastify'
+import ForgotPasswordPage from './pages/Forgot-password.page'
+import ResetPasswordPage from './pages/Reset-password.page'
+import AuthLayout from './Layout/AuthLayout'
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer />
       <AuthProvider>
         <Routes>
           {/** User Auth pages */}
-          <Route path="/" element={<AuthGuard isPrivate={false} />}>
+          <Route path="/" element={<PublicRoutes /> && <AuthLayout />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="reset-password" element={<ResetPasswordPage />} />
           </Route>
 
-          <Route path="/verify-email">
-            <Route index element={<VerifyEmailPage />} />
-            <Route path="/verify-email?token" element={<VerifyEmailPage />} />
-          </Route>
+          <Route
+            path="verify-email"
+            element={
+              <VerifyEmailRoutes>
+                <VerifyEmailPage />
+              </VerifyEmailRoutes>
+            }
+          />
 
           {/** Protected Routes */}
-          <Route path="/" element={<AuthGuard isPrivate />}>
-            <Route
-              path="dashboard"
-              Component={() => <h1>Protected Route</h1>}
-            />
+          <Route path="/" element={<PrivateRoutes />}>
+            <Route path="dashboard" element={<DashBoardPage />} />
           </Route>
 
           <Route path="*" element={<h1>Page not found</h1>} />

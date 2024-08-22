@@ -1,34 +1,37 @@
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
-import img from '../assets/images/verify-email-logo.png'
-import useAuth from '../hooks/useAuth'
 import { useEffect } from 'react'
-import { verifyEmailService } from '../services/authService'
+import img from '../assets/images/verify-email-logo.png'
+import { toast, Bounce } from 'react-toastify'
+import { useCookies } from 'react-cookie'
+import Button from '../components/Buttons/Btn'
 
 const VerifyEmailPage = () => {
-  const { isEmailVerified, setIsEmailVerified } = useAuth()
-
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get('token')
-  const navigate = useNavigate()
+  const [cookie, , removeCookie] = useCookies(['__emailIsVerified'])
 
   useEffect(() => {
-    const verifyEmail = async () => {
-      if (token) {
-        const response = await verifyEmailService(token)
-        if (response.success) {
-          setIsEmailVerified(true)
-          navigate('/dashboard')
-        }
-      }
+    const notify = (message: string) => {
+      toast(message, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+        type: 'error',
+      })
     }
-    verifyEmail()
+
+    if (cookie.__emailIsVerified) {
+      notify('Invalid Verification Link.')
+      removeCookie('__emailIsVerified')
+    }
   }, [])
 
-  if (isEmailVerified) {
-    return <Navigate to="/dashboard" />
+  const handleSubmit = () => {
+    return
   }
-
-  const handleSubmit = () => {}
 
   return (
     <div className="verify-email-container">
@@ -44,9 +47,9 @@ const VerifyEmailPage = () => {
             have not received the email after a few minutes, please check your
             spam folder
           </p>
-          <button id="resend-email" onSubmit={handleSubmit}>
+          <Button id="resend-email" type="button" onClick={handleSubmit}>
             Resend email
-          </button>
+          </Button>
         </section>
       </div>
     </div>

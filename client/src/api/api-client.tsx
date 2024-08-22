@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { RefreshAccessToken } from '../services/authService'
 
-const BASE_URL = 'http://localhost:3000/api/v1/auth'
+const BASE_URL = 'http://localhost:3000/api/v1'
 
 const _apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -23,6 +23,7 @@ _apiClient.interceptors.response.use(
       originalRequest._retry = true
       const access_token = await RefreshAccessToken()
       if (access_token?.status !== 200) {
+        localStorage.removeItem('loggedIn')
         throw error
       }
       return _apiClient(originalRequest)

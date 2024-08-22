@@ -210,6 +210,40 @@
   }
 }
 
+#logOut {
+  background: #5429ff;
+  color: #fff;
+  border: 0;
+  border-radius: 0.5rem;
+  width: 5rem;
+  height: 2rem;
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  margin: auto;
+}
+
+.forgotPwd-icon {
+  width: 3rem;
+  aspect-ratio: 1;
+  display: flex;
+  border: 1px solid #cdcdcd;
+  border-radius: 0.5rem;
+
+  svg {
+    margin: auto;
+    color: #272727;
+  }
+}
+.forgot-password-back {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  svg {
+    color: #5429ff;
+  }
+}
+
 @media only screen and (max-width: 1024px) {
   .auth_container {
     > div {

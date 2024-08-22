@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface AuthContextType {
-  LogOut: () => Promise<void>
+  logOut: () => Promise<void>
   isloading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   isAuthenticated: boolean
@@ -13,6 +13,7 @@ export interface AuthContextType {
 export interface User {
   id: number
   username: string
+  isEmailVerified: boolean
   // add other user properties as needed
 }
 
