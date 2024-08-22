@@ -19,11 +19,13 @@ function App() {
       <AuthProvider>
         <Routes>
           {/** User Auth pages */}
-          <Route path="/" element={<PublicRoutes /> && <AuthLayout />}>
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="reset-password" element={<ResetPasswordPage />} />
+          <Route path="/" element={<PublicRoutes />}>
+            <Route element={<AuthLayout />}>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+              <Route path="forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="reset-password" element={<ResetPasswordPage />} />
+            </Route>
           </Route>
 
           <Route
