@@ -4,9 +4,10 @@ import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
 import AuthForm from '../../components/Forms/AuthFom'
 import { RegisterService } from '../../services/authService'
 import Button from '../../components/Buttons/Btn'
+import SimpleMessage from '../../components/Messages/SimpleMessage'
 
 const RegisterPage = () => {
-  const [, setError] = useState<string | undefined>('')
+  const [isError, setError] = useState<string | undefined>('')
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
   const navigate = useNavigate()
@@ -34,8 +35,10 @@ const RegisterPage = () => {
       description="Sign up and start exploring!"
       onSubmit={handleSubmit}
     >
-      {/**group inputs */}
+      {/**Error message */}
+      {isError && <SimpleMessage message={isError} />}
 
+      {/**group inputs */}
       <div className="group-input">
         <label htmlFor="email">Username</label>
         <input

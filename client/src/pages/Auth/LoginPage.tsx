@@ -7,10 +7,11 @@ import useAuth from '../../hooks/useAuth'
 import AuthForm from '../../components/Forms/AuthFom'
 import Button from '../../components/Buttons/Btn'
 import { LoginService } from '../../services/authService'
+import SimpleMessage from '../../components/Messages/SimpleMessage'
 
 const LoginPage = () => {
   const navigate = useNavigate()
-  const [, setError] = useState<string | undefined>('')
+  const [isError, setError] = useState<string | undefined>('')
   const { setAuthenticated, setIsEmailVerified } = useAuth()
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
@@ -73,8 +74,10 @@ const LoginPage = () => {
       description="Please fill your detail to access your account."
       onSubmit={handleSubmit}
     >
-      {/**group inputs */}
+      {/**error message */}
+      {isError && <SimpleMessage message={isError} />}
 
+      {/**group inputs */}
       <div className="group-input">
         <label htmlFor="email">Email</label>
         <input
