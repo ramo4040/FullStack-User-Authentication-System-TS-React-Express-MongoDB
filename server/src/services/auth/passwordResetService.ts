@@ -54,7 +54,7 @@ export default class PasswordResetService implements IPasswordResetService {
       return {
         success: false,
         status: 404,
-        message: 'Token not valid',
+        message: 'Reset password link not valid',
       }
     }
 
@@ -64,11 +64,12 @@ export default class PasswordResetService implements IPasswordResetService {
       return {
         success: false,
         status: 400,
-        message: 'Token not valid',
+        message: 'Reset password link not valid',
       }
     }
 
     return {
+      message: 'Your password has been reset successfully! You can now log in with your new password.',
       success: true,
       status: 200,
       user: decodeToken._id as Partial<IUser>,

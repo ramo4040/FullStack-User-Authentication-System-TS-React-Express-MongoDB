@@ -30,8 +30,10 @@ export default class UserPasswordController implements IUserPasswordController {
   passwordReset = async (req: Request, res: Response): Promise<void> => {
     const { forgotPwdToken } = req.cookies
 
+    res.clearCookie('forgotPwdToken')
+
     if (!forgotPwdToken) {
-      res.status(404).end()
+      res.status(404).send({ success: false, message: 'Reset password link not valid' })
       return
     }
 
@@ -39,13 +41,13 @@ export default class UserPasswordController implements IUserPasswordController {
 
     if (success) {
       const updateUser = await this.PasswordResetService.updatePassword(user as string, req.body.password)
+
       if (updateUser) {
-        res.status(status).send({ message })
+        res.status(status).send({ success, status, message })
         return
       }
     }
 
-    res.clearCookie('forgotPwdToken')
     res.status(status).send({ message })
   }
 }
