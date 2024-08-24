@@ -1,92 +1,61 @@
 import { IStatusMessage } from '../types/authTypes'
 import _apiClient from '../api/api-client'
-import axios, { AxiosResponse } from 'axios'
+import { isAxiosError } from 'axios'
 
-export const LoginService = async (
-  formdata: FormData,
-): Promise<IStatusMessage> => {
+type ApiReturnFunction = IStatusMessage
+
+const apiRequest = async (
+  method: 'get' | 'post' | 'patch' | 'put',
+  url: string,
+  formData?: FormData,
+): Promise<ApiReturnFunction> => {
   try {
-    const res = await _apiClient.post<IStatusMessage>('/auth/login', formdata)
-    return res.data
+    const response = await _apiClient[method]<IStatusMessage>(url, formData)
+    return response.data
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response) return error.response.data
+    if (isAxiosError(error) && error.response) {
+      return {
+        success: false,
+        message: error.response.data.message,
+      }
+    }
     return {
       success: false,
-      message: 'An error occurred during authentication, Please try again.',
+      message: 'An error occurred, Please try again.',
     }
   }
 }
 
-export const RegisterService = async (
+export const LoginService = (
   formdata: FormData,
-): Promise<IStatusMessage> => {
-  try {
-    const res = await _apiClient.post<IStatusMessage>(
-      '/auth/register',
-      formdata,
-    )
-    return res.data
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) return error.response.data
-    return {
-      success: false,
-      message: 'An error occurred during registration, Please try again.',
-    }
-  }
+): Promise<ApiReturnFunction> => {
+  return apiRequest('post', '/auth/login', formdata)
 }
 
-export const RefreshAccessToken = async (): Promise<
-  AxiosResponse | undefined
-> => {
-  try {
-    const res = await _apiClient.post('/auth/token/refresh')
-    return res
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) return error.response.data
-  }
+export const RegisterService = (
+  formdata: FormData,
+): Promise<ApiReturnFunction> => {
+  return apiRequest('post', '/auth/register', formdata)
 }
 
-export const verifyEmailService = async (
+export const RefreshAccessToken = async (): Promise<ApiReturnFunction> => {
+  return apiRequest('post', '/auth/token/refresh')
+}
+
+export const verifyEmailService = (
   token: string | null,
-): Promise<IStatusMessage> => {
-  try {
-    const res = await _apiClient.patch(`/auth/email-status?token=${token}`)
-    return res.data
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) return error.response.data
-    return {
-      success: false,
-      message: 'error',
-    }
-  }
+): Promise<ApiReturnFunction> => {
+  return apiRequest('patch', `/auth/email-status?token=${token}`)
 }
 
-export const ForgotPasswordService = async (
+export const ForgotPasswordService = (
   formdata: FormData,
-): Promise<IStatusMessage> => {
-  try {
-    const res = await _apiClient.post('/auth/forgot-password', formdata)
-    return res.data
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) return error.response.data
-    return {
-      success: false,
-      message: 'error',
-    }
-  }
+): Promise<ApiReturnFunction> => {
+  return apiRequest('post', '/auth/forgot-password', formdata)
 }
 
-export const ResetPasswordService = async (
+export const ResetPasswordService = (
   formdata: FormData,
-): Promise<IStatusMessage> => {
-  try {
-    const res = await _apiClient.patch('/auth/reset-password', formdata)
-    return res.data
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) return error.response.data
-    return {
-      success: false,
-      message: 'An error occurred ',
-    }
-  }
+): Promise<ApiReturnFunction> => {
+  return apiRequest('patch', '/auth/reset-password', formdata)
 }

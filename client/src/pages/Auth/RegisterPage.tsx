@@ -4,9 +4,11 @@ import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
 import AuthForm from '../../components/Forms/AuthFom'
 import { RegisterService } from '../../services/authService'
 import Button from '../../components/Buttons/Btn'
-import SimpleMessage from '../../components/Messages/SimpleMessage'
+import ErrorMessage from '../../components/Messages/ErrorMessage'
+import useAuth from '../../hooks/useAuth'
 
 const RegisterPage = () => {
+  const { showNotification } = useAuth()
   const [isError, setError] = useState<string | undefined>('')
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
@@ -19,6 +21,10 @@ const RegisterPage = () => {
 
     if (response.success) {
       navigate('/login')
+      showNotification({
+        message: "Registration successful! Don't forget to verify your email.",
+        type: 'success',
+      })
       return
     }
 
@@ -36,7 +42,7 @@ const RegisterPage = () => {
       onSubmit={handleSubmit}
     >
       {/**Error message */}
-      {isError && <SimpleMessage message={isError} />}
+      {isError && <ErrorMessage message={isError} />}
 
       {/**group inputs */}
       <div className="group-input">
@@ -96,7 +102,7 @@ const RegisterPage = () => {
 
       {/** submit buttons */}
       <div className="group-btn">
-        <Button type="submit">Sign in</Button>
+        <Button type="submit">Sign up</Button>
 
         <Button id="google-btn" type="button" onClick={handleGoogleSubmit}>
           <svg

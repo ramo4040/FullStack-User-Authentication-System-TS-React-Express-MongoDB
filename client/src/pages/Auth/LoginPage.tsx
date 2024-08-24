@@ -1,42 +1,28 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
 import { useEffect, useState } from 'react'
-import { toast, Bounce } from 'react-toastify'
 import { useCookies } from 'react-cookie'
 import useAuth from '../../hooks/useAuth'
 import AuthForm from '../../components/Forms/AuthFom'
 import Button from '../../components/Buttons/Btn'
 import { LoginService } from '../../services/authService'
-import SimpleMessage from '../../components/Messages/SimpleMessage'
+import ErrorMessage from '../../components/Messages/ErrorMessage'
 
 const LoginPage = () => {
   const navigate = useNavigate()
   const [isError, setError] = useState<string | undefined>('')
-  const { setAuthenticated, setIsEmailVerified } = useAuth()
+  const { setAuthenticated, setIsEmailVerified, showNotification } = useAuth()
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
   const [cookie, , removeCookie] = useCookies(['__emailIsVerified'])
 
   useEffect(() => {
-    const notify = (message: string) => {
-      toast(message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
+    if (cookie.__emailIsVerified) {
+      showNotification({
+        message:
+          'The verification link is invalid or has expired. Please log in to check your account status or request a new verification link.',
         type: 'error',
       })
-    }
-
-    if (cookie.__emailIsVerified) {
-      notify(
-        'The verification link is invalid or has expired. Please log in to check your account status or request a new verification link.',
-      )
       removeCookie('__emailIsVerified')
     }
   }, [])
@@ -75,7 +61,7 @@ const LoginPage = () => {
       onSubmit={handleSubmit}
     >
       {/**error message */}
-      {isError && <SimpleMessage message={isError} />}
+      {isError && <ErrorMessage message={isError} />}
 
       {/**group inputs */}
       <div className="group-input">
@@ -112,7 +98,6 @@ const LoginPage = () => {
       </div>
 
       {/** submit buttons */}
-
       <div className="group-btn">
         <Button type="submit">Sign in</Button>
 

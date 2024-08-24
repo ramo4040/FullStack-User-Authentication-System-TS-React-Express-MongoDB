@@ -11,6 +11,7 @@ import LoginPage from './pages/Auth/LoginPage'
 import RegisterPage from './pages/Auth/RegisterPage'
 import VerifyEmailPage from './pages/Auth/verify-email.page'
 import DashBoardPage from './pages/DahsboardPage'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   return (

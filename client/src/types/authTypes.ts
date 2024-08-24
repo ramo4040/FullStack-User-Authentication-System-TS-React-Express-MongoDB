@@ -8,6 +8,13 @@ export interface AuthContextType {
   setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
   isEmailVerified: boolean
   setIsEmailVerified: React.Dispatch<React.SetStateAction<boolean>>
+  showNotification: (props: INotificationProps) => void
+}
+
+export interface INotificationProps {
+  message: string
+  type: 'success' | 'error' | 'warning' | 'info' // Adjust types as needed
+  timeout?: number
 }
 
 export interface User {

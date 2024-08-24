@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useState } from 'react'
-import { AuthContextType } from '../types/authTypes'
+import { AuthContextType, INotificationProps } from '../types/authTypes'
 import _apiClient from '../api/api-client'
 import { useCookies } from 'react-cookie'
+import { toast, Bounce } from 'react-toastify'
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 interface AuthProviderProps {
   children: React.ReactNode
@@ -13,7 +14,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isloading, setIsLoading] = useState<boolean>(true)
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false)
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false)
-
   const [cookie] = useCookies(['__l'])
 
   // Check if user has a valid token
@@ -43,6 +43,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsEmailVerified(false)
   }
 
+  const showNotification = ({
+    message,
+    type,
+    timeout = 3000,
+  }: INotificationProps) => {
+    if (message) {
+      toast(message, {
+        position: 'top-center',
+        autoClose: timeout,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+        type: type,
+      })
+    }
+  }
+
   return (
     <>
       <AuthContext.Provider
@@ -54,6 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setAuthenticated,
           isEmailVerified,
           setIsEmailVerified,
+          showNotification,
         }}
       >
         {!isloading && children}
