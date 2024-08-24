@@ -1,7 +1,6 @@
-import logo from '../../assets/images/Logo.png'
-
 interface IAuthForm {
   description?: string
+  title?: string
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
   children: React.ReactNode
   hasHeader?: boolean
@@ -9,6 +8,7 @@ interface IAuthForm {
 
 const AuthForm = ({
   description,
+  title,
   onSubmit,
   children,
   hasHeader = true,
@@ -16,7 +16,7 @@ const AuthForm = ({
   return (
     <main className="form_container">
       <header>
-        <img src={logo} className="logo" />
+        <div className="logo"></div>
         <h2>NFT Yassir</h2>
       </header>
 
@@ -24,7 +24,7 @@ const AuthForm = ({
         <form onSubmit={onSubmit}>
           {hasHeader && (
             <header>
-              <h1>NFT Yassir</h1>
+              <h1>{title}</h1>
               <p>{description}</p>
             </header>
           )}

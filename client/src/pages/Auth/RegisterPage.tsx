@@ -38,6 +38,7 @@ const RegisterPage = () => {
 
   return (
     <AuthForm
+      title="Sign Up"
       description="Sign up and start exploring!"
       onSubmit={handleSubmit}
     >

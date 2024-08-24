@@ -57,6 +57,7 @@ const LoginPage = () => {
 
   return (
     <AuthForm
+      title="Sign In"
       description="Please fill your detail to access your account."
       onSubmit={handleSubmit}
     >
