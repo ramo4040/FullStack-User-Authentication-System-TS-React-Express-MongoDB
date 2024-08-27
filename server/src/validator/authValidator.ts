@@ -12,7 +12,7 @@ export default class AuthValidator implements IAuthValidator {
   })
 
   // schema for register requests
-  private readonly RegisterSchema = Joi.object({
+  private readonly registerSchema = Joi.object({
     username: Joi.string().required().min(3).max(40).alphanum().messages({
       'string.min': 'Username must be at least 3 characters long.',
       'string.max': 'Username must be at most 40 characters long.',
@@ -44,19 +44,49 @@ export default class AuthValidator implements IAuthValidator {
       }),
   })
 
-  // Middleware functions to validate login and regiser requests
+  // schema for forgot-password requests
+  private readonly forgotPassword = Joi.object({
+    email: Joi.string().required().email().messages({ 'string.email': 'please enter a valid address email' }),
+  })
 
+  // schema for reset-password requests
+  private readonly resetPassword = Joi.object({
+    password: Joi.string()
+      .required()
+      .min(8)
+      .regex(/^^(?=.*[A-Z])(?=.*[\W_]).{8,}$/)
+      .messages({
+        'string.min': 'Password must be at least 8 characters long.',
+        'string.pattern.base':
+          'Password must contain at least one lowercase letter, uppercase letter, digit, and special character.',
+      }),
+    confirmPassword: Joi.string()
+      .required()
+      .valid(Joi.ref('password')) // matches the password
+      .messages({
+        'any.only': 'Confirm password must match the password.',
+      }),
+  })
+
+  // Map to associate paths with their corresponding schemas
+  private readonly schemaMap: { [key: string]: Joi.ObjectSchema } = {
+    '/login': this.loginSchema,
+    '/register': this.registerSchema,
+    '/forgot-password': this.forgotPassword,
+    '/reset-password': this.resetPassword,
+  }
+
+  // Middleware functions to validate login and regiser requests
   validate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      if (req.path === '/login') {
-        await this.loginSchema.validateAsync(req.body)
+    const schema = this.schemaMap[req.path]
+
+    if (schema) {
+      try {
+        await schema.validateAsync(req.body)
         next()
-        return
+      } catch (error: any) {
+        res.status(422).send({ status: false, message: error?.details[0]?.message })
       }
-      await this.RegisterSchema.validateAsync(req.body)
-      next()
-    } catch (error: any) {
-      res.status(422).send({ status: false, message: error?.details[0].message })
     }
   }
 }

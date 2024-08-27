@@ -40,7 +40,7 @@ export default class AuthRoutes implements IRoutes {
     this.router.get('/verify-email', this.UserAccountController.verifyEmail)
     this.router.post('/token/refresh', this.UserAccountController.refreshToken)
 
-    this.router.post('/forgot-password', this.UserPasswordController.forgotPassword)
-    this.router.patch('/reset-password', this.UserPasswordController.passwordReset)
+    this.router.post('/forgot-password', this.AuthValidator.validate, this.UserPasswordController.forgotPassword)
+    this.router.patch('/reset-password', this.AuthValidator.validate, this.UserPasswordController.passwordReset)
   }
 }
