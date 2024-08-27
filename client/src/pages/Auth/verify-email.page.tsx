@@ -1,57 +1,50 @@
 import { useEffect } from 'react'
-import img from '../../assets/images/verify-email-logo.png'
-import { toast, Bounce } from 'react-toastify'
+import { FaArrowRightLong } from 'react-icons/fa6'
 import { useCookies } from 'react-cookie'
 import Button from '../../components/Buttons/Btn'
+import { SiMinutemailer } from 'react-icons/si'
+import useAuth from '../../hooks/useAuth'
+import _apiClient from '../../api/api-client'
+import { useNavigate } from 'react-router-dom'
 
 const VerifyEmailPage = () => {
   const [cookie, , removeCookie] = useCookies(['__emailIsVerified'])
+  const { setAuthenticated, setIsEmailVerified, showNotification } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const notify = (message: string) => {
-      toast(message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
+    if (cookie.__emailIsVerified) {
+      showNotification({
+        message: 'Invalid Verification Link.',
         type: 'error',
       })
-    }
-
-    if (cookie.__emailIsVerified) {
-      notify('Invalid Verification Link.')
       removeCookie('__emailIsVerified')
     }
   }, [])
 
-  const handleSubmit = () => {
-    return
+  const handleSubmit = async () => {
+    try {
+      await _apiClient.get('/auth/logout')
+      setAuthenticated(false)
+      setIsEmailVerified(false)
+      localStorage.removeItem('loggedIn')
+    } finally {
+      navigate('/login')
+    }
   }
 
   return (
     <div className="verify-email-container">
-      <div>
-        <header>
-          <h1>Verify your email</h1>
-          <p>You will need to verify your email to complete registration</p>
-        </header>
-        <section>
-          <img src={img} />
-          <p>
-            An email has been sent with a link to verify your account. If you
-            have not received the email after a few minutes, please check your
-            spam folder
-          </p>
-          <Button id="resend-email" type="button" onClick={handleSubmit}>
-            Resend email
-          </Button>
-        </section>
-      </div>
+      <SiMinutemailer color="fff" size={'3.5rem'} />
+
+      <section>
+        <h1>Check your email</h1>
+        <p>We just sent a verification link to your email</p>
+      </section>
+
+      <Button type="button" onClick={handleSubmit}>
+        Go to Login <FaArrowRightLong />
+      </Button>
     </div>
   )
 }

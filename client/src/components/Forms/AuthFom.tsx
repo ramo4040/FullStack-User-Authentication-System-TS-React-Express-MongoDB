@@ -17,7 +17,7 @@ const AuthForm = ({
     <main className="form_container">
       <header>
         <div className="logo"></div>
-        <h2>NFT Yassir</h2>
+        <h2>Yassir</h2>
       </header>
 
       <div>

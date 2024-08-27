@@ -160,61 +160,40 @@
 }
 
 .verify-email-container {
-  background-image: linear-gradient(90deg, #fff 0% 50%, #e5dfff 0% 50%);
-  display: flex;
+  background: #000;
+  color: #fff;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2rem;
 
-  > div {
-    background: #fff;
-    box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
-    margin: auto;
-    width: 60vw;
-    height: 70vh;
-    border-radius: 1.5rem;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+  section {
     text-align: center;
+    display: grid;
+    gap: 0.5rem;
 
-    header {
-      flex: 20%;
-      h1 {
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-      }
+    p {
+      color: #c1c1c1;
     }
+  }
+  button {
+    padding: 0.4rem 1rem;
+    border-radius: 0.2rem;
+    border: 0;
+    border: 1px solid #fff;
+    background: #fff;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: 0.4s;
+    cursor: pointer;
 
-    section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-evenly;
-      flex: 80%;
-      max-width: 70%;
-
-      img {
-        width: 100%;
-        max-width: 17rem;
-        aspect-ratio: 1;
-      }
-
-      p {
-        color: #5d5d5d;
-      }
-
-      #resend-email {
-        border: 0;
-        padding: 0.6rem 2rem;
-        border-radius: 0.3rem;
-        cursor: pointer;
-        background: #e5dfff;
-        color: #2c2c2c;
-        margin-top: 0.6rem;
-        font-size: 14px;
-      }
+    &:hover {
+      background: none;
+      color: #fff;
     }
   }
 }
