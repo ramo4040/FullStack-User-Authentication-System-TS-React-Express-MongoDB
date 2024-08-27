@@ -7,7 +7,7 @@ import {
   IUserAuthController,
   IUserPasswordController,
 } from '@/core/interfaces/IAuth'
-import { IAuthValidator } from '@/core/interfaces/IValidator'
+import { IAuthValidator } from '@/core/interfaces/validator.interface'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
 
@@ -41,6 +41,11 @@ export default class AuthRoutes implements IRoutes {
     this.router.post('/token/refresh', this.UserAccountController.refreshToken)
 
     this.router.post('/forgot-password', this.AuthValidator.validate, this.UserPasswordController.forgotPassword)
-    this.router.patch('/reset-password', this.AuthValidator.validate, this.UserPasswordController.passwordReset)
+    this.router.patch(
+      '/reset-password',
+      this.AuthMiddleware.resetPasswordTokenValidate,
+      this.AuthValidator.validate,
+      this.UserPasswordController.passwordReset,
+    )
   }
 }
