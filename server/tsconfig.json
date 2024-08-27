@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "lib": ["ES2020", "dom"], // Specify a list of libraries the project will use
+    "lib": ["ES2020"], // Specify a list of libraries the project will use
     "target": "ES2020", // Set the JavaScript version for output files
     "module": "NodeNext", // Set the module system (Node.js uses CommonJS)
     "strict": true, // Enable all strict type-checking options
     "baseUrl": "./src", // Base directory to resolve non-relative module names
-    "outDir": "dist", // Redirect output structure to the 'dist' folder
+    "outDir": "./dist", // Redirect output structure to the 'dist' folder
     "rootDir": ".", // Specify the root directory of source files
     "skipLibCheck": true, // Skip type checking of all declaration files (*.d.ts)
     "esModuleInterop": true, // Enables compatibility with default imports from modules
