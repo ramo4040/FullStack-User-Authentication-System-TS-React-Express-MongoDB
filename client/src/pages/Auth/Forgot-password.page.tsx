@@ -50,7 +50,7 @@ const ForgotPasswordPage = () => {
             required
           />
           <div className="group-btn">
-            <button type="submit">Reset Password</button>
+            <button type="submit">Send link to email</button>
             <div className="forgot-password-back">
               <IoIosArrowBack />
               <Link to="/login">Back to Log in</Link>

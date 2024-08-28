@@ -26,7 +26,7 @@ export default class UserPasswordController implements IUserPasswordController {
       return
     }
 
-    res.send(200).end()
+    res.status(200).send({ success: true })
   }
 
   passwordReset = async (req: Request, res: Response): Promise<void> => {

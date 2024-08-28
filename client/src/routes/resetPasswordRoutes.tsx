@@ -20,12 +20,13 @@ function ResetPasswordRoutes({ children }: { children: React.ReactNode }) {
           type: 'error',
         })
         setIsValid(false)
+        return
       }
 
       setIsValid(true)
     }
     validateToken()
-  }, [searchParams])
+  }, [])
 
   // Redirect based on validation result
   if (!isValid) {
