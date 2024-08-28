@@ -1,5 +1,5 @@
 import TYPES from '@/core/constants/TYPES'
-import { IGoogleAuthController, IGoogleAuthService } from '@/core/interfaces/IAuth'
+import { IGoogleAuthController, IGoogleAuthService } from '@/core/interfaces/Auth'
 import { CookieOptions, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 

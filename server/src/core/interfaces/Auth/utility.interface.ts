@@ -1,5 +1,4 @@
-import { ObjectId } from 'mongoose'
-import { IUser } from './IUser'
+import { IJwtPayload, IUser } from './objects.interface'
 
 export interface IPasswordHasher {
   hashPassword(password: string): Promise<string>
@@ -13,13 +12,7 @@ export interface IAuthToken {
   verify(token: string, key: string): Promise<IJwtPayload | null>
 }
 
-export interface IJwtPayload extends IUser {
-  _id: string | ObjectId
-  iat: number
-  exp: number
-}
-
 export interface INodeMailer {
   sendVerificationEmail(email: string, token: string): Promise<void>
-  sendForgotPwdEmail(email: string): Promise<void>
+  sendForgotPwdEmail(email: string, token: string): Promise<void>
 }

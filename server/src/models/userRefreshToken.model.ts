@@ -1,4 +1,4 @@
-import { IUserToken } from '@/core/interfaces/IUser'
+import { IUserToken } from '@/core/interfaces/Auth'
 import { Model, model, Schema, Types } from 'mongoose'
 
 const userRefreshToken = new Schema<IUserToken>(

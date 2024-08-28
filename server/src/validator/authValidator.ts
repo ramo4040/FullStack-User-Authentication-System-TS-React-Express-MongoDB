@@ -1,4 +1,4 @@
-import { IAuthValidator } from '@/core/interfaces/IValidator'
+import { IAuthValidator } from '@/core/interfaces/Auth'
 import { Request, NextFunction, Response } from 'express'
 import { injectable } from 'inversify'
 import Joi from 'joi'
@@ -85,7 +85,7 @@ export default class AuthValidator implements IAuthValidator {
         await schema.validateAsync(req.body)
         next()
       } catch (error: any) {
-        res.status(422).send({ status: false, message: error?.details[0]?.message })
+        res.status(422).send({ success: false, message: error?.details[0]?.message })
       }
     }
   }

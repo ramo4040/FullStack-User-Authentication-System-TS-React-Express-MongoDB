@@ -1,5 +1,5 @@
 import env from '@/core/config/env'
-import { INodeMailer } from '@/core/interfaces/IUtils'
+import { INodeMailer } from '@/core/interfaces/Auth'
 import { injectable } from 'inversify'
 import nodeMailer from 'nodemailer'
 
@@ -35,8 +35,8 @@ export default class NodeMailer implements INodeMailer {
     this.sendMail(mailoptions)
   }
 
-  async sendForgotPwdEmail(email: string): Promise<void> {
-    const verificationUrl = `http://localhost:5173/reset-password`
+  async sendForgotPwdEmail(email: string, token: string): Promise<void> {
+    const verificationUrl = `http://localhost:5173/reset-password?token=${token}`
 
     const mailoptions = {
       from: env.MAILER.user,

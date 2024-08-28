@@ -1,8 +1,16 @@
 import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
-import { IPasswordResetService, IStatusMessage } from '@/core/interfaces/IAuth'
-import { ITokenRepo, IUser, IUserRepository, IUserToken } from '@/core/interfaces/IUser'
-import { IAuthToken, INodeMailer, IPasswordHasher } from '@/core/interfaces/IUtils'
+import {
+  IAuthToken,
+  INodeMailer,
+  IPasswordHasher,
+  ITokenRepo,
+  IUser,
+  IUserRepository,
+  IUserToken,
+  IPasswordResetService,
+  IStatusMessage,
+} from '@/core/interfaces/Auth'
 import { inject, injectable } from 'inversify'
 import { ObjectId } from 'mongoose'
 
@@ -23,13 +31,12 @@ export default class PasswordResetService implements IPasswordResetService {
       const token = await this.AuthToken.generateEmailToken(isEmailValid.id)
 
       try {
-        await this.NodeMailer.sendForgotPwdEmail(email)
+        await this.NodeMailer.sendForgotPwdEmail(email, token)
         await this.ForgotPwdRepo.create(isEmailValid._id as ObjectId, token)
 
         return {
           success: true,
           status: 200,
-          forgotPwdToken: token,
           message: 'Please check your email',
         }
       } catch (error) {
@@ -69,15 +76,33 @@ export default class PasswordResetService implements IPasswordResetService {
     }
 
     return {
-      message: 'Your password has been reset successfully! You can now log in with your new password.',
       success: true,
       status: 200,
       user: decodeToken._id as Partial<IUser>,
     }
   }
 
-  async updatePassword(userId: string, newPwd: string): Promise<IUser | null> {
+  async updatePassword(userId: string, newPwd: string): Promise<IStatusMessage> {
     const newHashPwd = await this.PasswordHasher.hashPassword(newPwd)
-    return await this.UserRepository.update({ _id: userId }, { $set: { password: newHashPwd } }, { new: true })
+
+    const updateUser = await this.UserRepository.update(
+      { _id: userId },
+      { $set: { password: newHashPwd } },
+      { new: true },
+    )
+
+    if (updateUser) {
+      return {
+        message: 'Your password has been reset successfully! You can now log in with your new password.',
+        success: true,
+        status: 200,
+      }
+    }
+
+    return {
+      message: 'Internal Server Error',
+      success: false,
+      status: 500,
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import container from './core/config/inversify.config'
 import TYPES from './core/constants/TYPES'
-import IBaseRoutes from './core/interfaces/IRoutes'
+import { IBaseRoutes } from '@/core/interfaces/Auth'
 import env from './core/config/env'
 import Server from './server'
 

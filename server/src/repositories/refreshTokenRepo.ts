@@ -1,4 +1,4 @@
-import { ITokenRepo, IUserToken } from '@/core/interfaces/IUser'
+import { ITokenRepo, IUserToken } from '@/core/interfaces/Auth'
 import UserRefreshTokenModel from '@/models/userRefreshToken.model'
 import { injectable } from 'inversify'
 import { ObjectId } from 'mongoose'

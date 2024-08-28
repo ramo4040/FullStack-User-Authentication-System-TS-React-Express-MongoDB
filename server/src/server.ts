@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser'
 import express from 'express'
-import IBaseRoutes from './core/interfaces/IRoutes'
+import { IBaseRoutes } from '@/core/interfaces/Auth'
 import mongoose, { ConnectOptions } from 'mongoose'
 import cors from 'cors'
 import multer from 'multer'

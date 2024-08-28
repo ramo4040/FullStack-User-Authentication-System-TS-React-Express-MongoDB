@@ -1,6 +1,5 @@
 import env from '@/core/config/env'
-import { IUser } from '@/core/interfaces/IUser'
-import { IAuthToken, IJwtPayload } from '@/core/interfaces/IUtils'
+import { IAuthToken, IJwtPayload, IUser } from '@/core/interfaces/Auth'
 import { injectable } from 'inversify'
 import jwt from 'jsonwebtoken'
 

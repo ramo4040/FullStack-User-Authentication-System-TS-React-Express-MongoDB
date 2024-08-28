@@ -1,8 +1,14 @@
 import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
-import { IStatusMessage, ITokenManagementService, ITokens } from '@/core/interfaces/IAuth'
-import { ITokenRepo, IUser, IUserToken } from '@/core/interfaces/IUser'
-import { IAuthToken } from '@/core/interfaces/IUtils'
+import {
+  IAuthToken,
+  ITokenRepo,
+  IUser,
+  IUserToken,
+  IStatusMessage,
+  ITokenManagementService,
+  ITokens,
+} from '@/core/interfaces/Auth'
 import { inject, injectable } from 'inversify'
 
 @injectable()

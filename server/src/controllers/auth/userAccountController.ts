@@ -1,5 +1,5 @@
 import TYPES from '@/core/constants/TYPES'
-import { ITokenManagementService, IUserAccountController, IUserVerificationService } from '@/core/interfaces/IAuth'
+import { ITokenManagementService, IUserAccountController, IUserVerificationService } from '@/core/interfaces/Auth'
 import { CookieOptions, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 

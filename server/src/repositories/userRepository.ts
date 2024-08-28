@@ -1,5 +1,4 @@
-import { IRegistrationData } from '@/core/interfaces/IAuth'
-import { IUser, IUserRepository } from '@/core/interfaces/IUser'
+import { IRegistrationData, IUser, IUserRepository } from '@/core/interfaces/Auth'
 import { UserModel } from '@/models/user.model'
 import { injectable } from 'inversify'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'

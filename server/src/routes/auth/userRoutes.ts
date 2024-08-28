@@ -1,5 +1,5 @@
 import TYPES from '@/core/constants/TYPES'
-import { IAuthMiddleware, IRoutes, IUserAuthController } from '@/core/interfaces/IAuth'
+import { IAuthMiddleware, IRoutes, IUserAuthController } from '@/core/interfaces/Auth'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
 

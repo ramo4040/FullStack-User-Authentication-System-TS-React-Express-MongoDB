@@ -1,7 +1,17 @@
 import TYPES from '@/core/constants/TYPES'
-import { IRegistrationData, IStatusMessage, ITokenManagementService, IUserAuthService } from '@/core/interfaces/IAuth'
-import { ITokenRepo, IUser, IUserToken, IUserRepository } from '@/core/interfaces/IUser'
-import { IAuthToken, INodeMailer, IPasswordHasher } from '@/core/interfaces/IUtils'
+import {
+  IAuthToken,
+  INodeMailer,
+  IPasswordHasher,
+  ITokenRepo,
+  IUser,
+  IUserToken,
+  IUserRepository,
+  IRegistrationData,
+  IStatusMessage,
+  ITokenManagementService,
+  IUserAuthService,
+} from '@/core/interfaces/Auth'
 import { inject, injectable } from 'inversify'
 import { ObjectId } from 'mongoose'
 

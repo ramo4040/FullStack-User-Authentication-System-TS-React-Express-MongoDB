@@ -1,6 +1,5 @@
 import TYPES from '@/core/constants/TYPES'
-import { IRoutes } from '@/core/interfaces/IAuth'
-import IBaseRoutes from '@/core/interfaces/IRoutes'
+import { IRoutes, IBaseRoutes } from '@/core/interfaces/Auth'
 import { Router } from 'express'
 import { inject, injectable } from 'inversify'
 

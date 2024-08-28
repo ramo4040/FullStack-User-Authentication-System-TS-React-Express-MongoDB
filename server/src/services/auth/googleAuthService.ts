@@ -1,7 +1,14 @@
 import env from '@/core/config/env'
 import TYPES from '@/core/constants/TYPES'
-import { IGoogleAuthService, IStatusMessage, ITokenManagementService, ITokens } from '@/core/interfaces/IAuth'
-import { IGoogleUserPayload, IUser, IUserRepository } from '@/core/interfaces/IUser'
+import {
+  IGoogleAuthService,
+  IStatusMessage,
+  ITokenManagementService,
+  ITokens,
+  IGoogleUserPayload,
+  IUser,
+  IUserRepository,
+} from '@/core/interfaces/Auth'
 import { OAuth2Client } from 'google-auth-library'
 import { inject, injectable } from 'inversify'
 
