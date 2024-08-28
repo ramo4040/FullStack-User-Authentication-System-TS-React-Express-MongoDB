@@ -12,6 +12,7 @@ import RegisterPage from './pages/Auth/RegisterPage'
 import VerifyEmailPage from './pages/Auth/verify-email.page'
 import DashBoardPage from './pages/DahsboardPage'
 import 'react-toastify/dist/ReactToastify.css'
+import ResetPasswordRoutes from './routes/resetPasswordRoutes'
 
 function App() {
   return (
@@ -25,7 +26,14 @@ function App() {
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
               <Route path="forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="reset-password" element={<ResetPasswordPage />} />
+              <Route
+                path="reset-password"
+                element={
+                  <ResetPasswordRoutes>
+                    <ResetPasswordPage />
+                  </ResetPasswordRoutes>
+                }
+              />
             </Route>
           </Route>
 

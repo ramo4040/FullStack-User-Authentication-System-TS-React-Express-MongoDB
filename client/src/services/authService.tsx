@@ -16,6 +16,7 @@ const apiRequest = async (
     if (isAxiosError(error) && error.response) {
       return {
         success: false,
+        status: error.response.data.status,
         message: error.response.data.message,
       }
     }
@@ -42,12 +43,6 @@ export const RefreshAccessToken = async (): Promise<ApiReturnFunction> => {
   return apiRequest('post', '/auth/token/refresh')
 }
 
-export const verifyEmailService = (
-  token: string | null,
-): Promise<ApiReturnFunction> => {
-  return apiRequest('patch', `/auth/email-status?token=${token}`)
-}
-
 export const ForgotPasswordService = (
   formdata: FormData,
 ): Promise<ApiReturnFunction> => {
@@ -56,6 +51,13 @@ export const ForgotPasswordService = (
 
 export const ResetPasswordService = (
   formdata: FormData,
+  token: string | null,
 ): Promise<ApiReturnFunction> => {
-  return apiRequest('patch', '/auth/reset-password', formdata)
+  return apiRequest('put', `/auth/reset-password?token=${token}`, formdata)
+}
+
+export const ValidateResetToken = (
+  token: string | null,
+): Promise<ApiReturnFunction> => {
+  return apiRequest('get', `/auth/validate-reset-token?token=${token}`)
 }

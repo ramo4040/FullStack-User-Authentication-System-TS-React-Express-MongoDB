@@ -2,32 +2,31 @@ import AuthForm from '../../components/Forms/AuthFom'
 import React, { useState } from 'react'
 import { MdPassword } from 'react-icons/md'
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
-import { useNavigate } from 'react-router-dom'
 import { ResetPasswordService } from '../../services/authService'
 import ErrorMessage from '../../components/Messages/ErrorMessage'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 
 const ResetPasswordPage = () => {
-  const { showNotification } = useAuth()
   const [togglePwd, setTogglePwd] = useState(false)
   const togglePassword = () => setTogglePwd(!togglePwd)
-  const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const { showNotification } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.target as HTMLFormElement)
-    const data = await ResetPasswordService(formData)
+    const data = await ResetPasswordService(formData, searchParams.get('token'))
 
-    if (data.status == 422 && data.message) {
+    if (!data.success && data.message) {
       setError(data.message)
       return
     }
-    showNotification({
-      message: data.message as string,
-      type: data.success ? 'success' : 'error',
-    })
+
     navigate('/login')
+    showNotification({ message: data.message as string, type: 'success' })
   }
 
   return (
