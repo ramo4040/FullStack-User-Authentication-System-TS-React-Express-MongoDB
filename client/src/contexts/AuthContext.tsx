@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useLayoutEffect, useState } from 'react'
 import { AuthContextType, INotificationProps } from '../types/authTypes'
 import _apiClient from '../api/api-client'
 import { useCookies } from 'react-cookie'
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [cookie] = useCookies(['__l'])
 
   // Check if user has a valid token
-  useEffect(() => {
+  useLayoutEffect(() => {
     const checkAuth = async () => {
       try {
         const user = await _apiClient.get('/me')
