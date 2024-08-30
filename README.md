@@ -29,6 +29,24 @@ This project is a comprehensive user authentication system designed to handle va
     * **Docker Compose** for multi-container orchestration [https://docs.docker.com/compose/](https://docs.docker.com/compose/)
     * **Husky** for Git hooks (pre-commit) [https://typicode.github.io/husky/](https://typicode.github.io/husky/)
 
+### Object-Oriented Design & Dependency Injection
+* **Object-Oriented Programming (OOP):**
+   * The backend leverages OOP principles to create modular, reusable, and maintainable code.
+
+* **Inversify Library:**
+   *  Used for Dependency Injection (DI) to manage the dependencies between classes, promoting loose coupling and making the application easier to test and extend.
+  
+## Screenshots
+
+|  |  |
+|---|---|
+|Sign Up page|Sign In page|
+| ![signup](./client/public/signup.png) | ![signin](./client/public/signin.png) |
+|Forgot password page|Reset password page|
+| ![forgotpassword](./client/public/forgotpassword.png) | ![resetpassword](./client/public/resetpassword.png) |
+|Email verification page|Dashboard page|
+| ![verfieremail](./client/public/verfieremail.png) | ![dashboard](./client/public/dashboard.png) |
+
 ### Project Structure 📁
 
 ```
@@ -273,9 +291,6 @@ Let me know if you have any questions or if there's anything else I can help you
 * The `token` in the request body or query parameter should be a valid authentication or verification token.
 * The response body may contain additional information depending on the specific endpoint.
 
-
-```
-```
 
 
 ### Contributing 🙌
