@@ -109,7 +109,9 @@ const RegisterPage = () => {
       {/** submit buttons */}
       <div className="group-btn">
         <Button type="submit">
-          {isLoading ? LoaderElement({ size: '1rem' }) : 'Sign up'}
+          {isLoading
+            ? LoaderElement({ size: '1rem', color: '#000' })
+            : 'Sign up'}
         </Button>
 
         <Button id="google-btn" type="button" onClick={handleGoogleSubmit}>

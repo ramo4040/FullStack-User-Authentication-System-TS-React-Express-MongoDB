@@ -13,6 +13,7 @@ interface ILoaderElement {
   message?: string
   layout?: 'vertical' | 'horizontal'
   size?: string
+  color?: string
 }
 
 const useLoader = (): IuseLoader => {
@@ -26,9 +27,14 @@ const useLoader = (): IuseLoader => {
     setIsLoading(false)
   }
 
-  const LoaderElement = ({ message, layout, size }: ILoaderElement) => {
+  const LoaderElement = ({ message, layout, size, color }: ILoaderElement) => {
     return isLoading ? (
-      <LoaderSpinner message={message} layout={layout} size={size} />
+      <LoaderSpinner
+        message={message}
+        layout={layout}
+        size={size}
+        color={color}
+      />
     ) : null
   }
 

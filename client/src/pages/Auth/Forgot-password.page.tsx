@@ -6,17 +6,21 @@ import { useState } from 'react'
 import { ForgotPasswordService } from '../../services/authService'
 import AuthForm from '../../components/Forms/AuthFom'
 import useAuth from '../../hooks/useAuth'
+import useLoader from '../../hooks/useLoader'
 
 const ForgotPasswordPage = () => {
   const { showNotification } = useAuth()
   const [error, setError] = useState<string>('')
   const navigate = useNavigate()
+  const { isLoading, showLoading, hideLoading, LoaderElement } = useLoader()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    showLoading()
     const formData = new FormData(e.target as HTMLFormElement)
     const { success, message } = await ForgotPasswordService(formData)
     if (!success && message) {
+      hideLoading()
       setError(message)
       return
     }
@@ -50,7 +54,11 @@ const ForgotPasswordPage = () => {
             required
           />
           <div className="group-btn">
-            <button type="submit">Send link to email</button>
+            <button type="submit" disabled={isLoading}>
+              {isLoading
+                ? LoaderElement({ size: '1rem' })
+                : 'Send link to email'}
+            </button>
             <div className="forgot-password-back">
               <IoIosArrowBack />
               <Link to="/login">Back to Log in</Link>

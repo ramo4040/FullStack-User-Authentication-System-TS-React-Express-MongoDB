@@ -111,7 +111,7 @@ const LoginPage = () => {
 
         <Button id="google-btn" type="button" onClick={handleGoogleSubmit}>
           {isLoading ? (
-            LoaderElement({ size: '1rem' })
+            LoaderElement({ size: '1rem', color: '#000' })
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"

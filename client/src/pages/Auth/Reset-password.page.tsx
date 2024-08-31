@@ -6,6 +6,7 @@ import { ResetPasswordService } from '../../services/authService'
 import ErrorMessage from '../../components/Messages/ErrorMessage'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
+import useLoader from '../../hooks/useLoader'
 
 const ResetPasswordPage = () => {
   const [togglePwd, setTogglePwd] = useState(false)
@@ -14,13 +15,16 @@ const ResetPasswordPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { showNotification } = useAuth()
+  const { isLoading, showLoading, hideLoading, LoaderElement } = useLoader()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    showLoading()
     const formData = new FormData(e.target as HTMLFormElement)
     const data = await ResetPasswordService(formData, searchParams.get('token'))
 
     if (!data.success && data.message) {
+      hideLoading()
       setError(data.message)
       return
     }
@@ -72,7 +76,9 @@ const ResetPasswordPage = () => {
             </div>
           </div>
           <div className="group-btn">
-            <button type="submit">Reset Password</button>
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? LoaderElement({ size: '1rem' }) : 'Reset Password'}
+            </button>
           </div>
         </div>
       </div>
