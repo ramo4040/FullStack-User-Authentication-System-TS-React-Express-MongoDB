@@ -3,7 +3,10 @@ import { Schema, model, Model } from 'mongoose'
 
 const userSchema = new Schema<IUser>(
   {
-    googleId: { type: String, unique: true, default: null },
+    googleId: {
+      type: String,
+      default: null,
+    },
 
     username: { type: String, unique: true, index: true, required: true },
 

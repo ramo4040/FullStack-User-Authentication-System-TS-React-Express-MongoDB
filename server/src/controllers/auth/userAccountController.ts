@@ -51,6 +51,6 @@ export default class UserAccountController implements IUserAccountController {
       })
     }
 
-    res.status(status).end()
+    res.status(status).send({ status, success })
   }
 }
