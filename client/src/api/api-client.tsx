@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { RefreshAccessToken } from '../services/authService'
 
 const BASE_URL = 'http://localhost:3000/api/v1'
@@ -12,23 +12,35 @@ const _apiClient: AxiosInstance = axios.create({
   },
 })
 
+// Flag to prevent multiple token refresh requests
+let isRefreshing = false
+
 // Response interceptor for API calls
 _apiClient.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  async function (error) {
-    const originalRequest = error.config
-    if (error.response.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true
-      const access_token = await RefreshAccessToken()
-      if (access_token?.status !== 200) {
-        localStorage.removeItem('loggedIn')
-        throw error
+  (response) => response,
+  async (error) => {
+    const originalRequest: AxiosRequestConfig = error.config
+
+    if (error.response && error.response.status === 403) {
+      if (!isRefreshing) {
+        isRefreshing = true
+        try {
+          // Refresh the access token
+          const accessToken = await RefreshAccessToken()
+
+          if (accessToken.status === 401) {
+            return Promise.reject(error)
+          }
+
+          // Retry the original request
+          return _apiClient(originalRequest)
+        } catch (refreshError) {
+          return Promise.reject(refreshError)
+        }
       }
-      return _apiClient(originalRequest)
     }
-    throw error
+    // Return a Promise rejection if the status code is not 403
+    return Promise.reject(error)
   },
 )
 

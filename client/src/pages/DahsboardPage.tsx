@@ -24,7 +24,6 @@ const DashBoardPage = () => {
       await _apiClient.get('/auth/logout')
       setAuthenticated(false)
       setIsEmailVerified(false)
-      localStorage.removeItem('loggedIn')
     } finally {
       navigate('/login')
     }
