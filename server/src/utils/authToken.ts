@@ -11,19 +11,19 @@ export default class AuthToken implements IAuthToken {
    * @returns jwt token @type String
    */
   async generateAccessToken(data: IUser): Promise<string> {
-    return await jwt.sign({ _id: data._id, isEmailVerified: data.isEmailVerified }, env.ACCESS_TOKEN.secret, {
+    return jwt.sign({ _id: data._id, isEmailVerified: data.isEmailVerified }, env.ACCESS_TOKEN.secret, {
       expiresIn: env.ACCESS_TOKEN.expire,
     })
   }
 
   async generateRefreshToken(data: IJwtPayload): Promise<string> {
-    return await jwt.sign({ _id: data._id, isEmailVerified: data.isEmailVerified }, env.REFRESH_TOKEN.secret, {
+    return jwt.sign({ _id: data._id, isEmailVerified: data.isEmailVerified }, env.REFRESH_TOKEN.secret, {
       expiresIn: env.REFRESH_TOKEN.expire,
     })
   }
 
   async generateEmailToken(id: string): Promise<string> {
-    return await jwt.sign({ _id: id }, env.EMAIL.secret, {
+    return jwt.sign({ _id: id }, env.EMAIL.secret, {
       expiresIn: env.EMAIL.expire,
     })
   }
@@ -34,7 +34,7 @@ export default class AuthToken implements IAuthToken {
    */
   async verify(token: string, key: string): Promise<IJwtPayload | null> {
     try {
-      const decodedToken = (await jwt.verify(token, key)) as IJwtPayload
+      const decodedToken = jwt.verify(token, key) as IJwtPayload
       return decodedToken
     } catch (error) {
       // if token undefined

@@ -23,7 +23,7 @@ export default class NodeMailer implements INodeMailer {
    * @returns Promise<void>
    */
   async sendVerificationEmail(email: string, token: string): Promise<void> {
-    const verificationUrl = `http://localhost:3000/api/v1/auth/verify-email?token=${token}`
+    const verificationUrl = `${env.URL.SERVER}/api/v1/auth/verify-email?token=${token}`
 
     const mailoptions = {
       from: env.MAILER.user,
@@ -36,7 +36,7 @@ export default class NodeMailer implements INodeMailer {
   }
 
   async sendForgotPwdEmail(email: string, token: string): Promise<void> {
-    const verificationUrl = `http://localhost:5173/reset-password?token=${token}`
+    const verificationUrl = `${env.URL.CLIENT}/reset-password?token=${token}`
 
     const mailoptions = {
       from: env.MAILER.user,
@@ -49,7 +49,7 @@ export default class NodeMailer implements INodeMailer {
   }
 
   private async sendMail(options: object): Promise<void> {
-    await this.emailTransporter.sendMail(options, (error) => {
+    this.emailTransporter.sendMail(options, (error) => {
       if (error) {
         throw error
       }

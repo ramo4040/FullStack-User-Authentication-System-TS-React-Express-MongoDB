@@ -1,11 +1,11 @@
 import { ObjectId, QueryOptions, UpdateQuery } from 'mongoose'
-import { IRegistrationData, IUser, IUserToken } from './objects.interface'
+import { IRegistrationData, IUserToken } from './objects.interface'
 
 export interface IUserRepository<T> {
-  createUserModel(data: IRegistrationData): Promise<IUser>
-  saveUser(user: IUser): Promise<IUser>
-  findOne(data: Partial<IUser>): Promise<T | null>
-  update(filter: Partial<T>, data: UpdateQuery<IUser>, options: QueryOptions): Promise<T | null>
+  createUserModel(data: IRegistrationData): Promise<T>
+  saveUser(user: T): Promise<T>
+  findOne(data: Partial<T>): Promise<T | null>
+  update(filter: Partial<T>, data: UpdateQuery<T>, options: QueryOptions): Promise<T | null>
 }
 
 export interface ITokenRepo<T> {

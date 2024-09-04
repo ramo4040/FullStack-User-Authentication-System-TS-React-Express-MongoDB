@@ -60,8 +60,6 @@ export default class UserAuthService implements IUserAuthService {
         message: 'Registration successful!',
       }
     } catch (error: any) {
-      console.log(error)
-
       return await this.handleRegistrationError(error)
     }
   }

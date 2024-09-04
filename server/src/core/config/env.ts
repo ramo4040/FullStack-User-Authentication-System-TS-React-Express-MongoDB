@@ -27,5 +27,10 @@ const env = {
     CLIENT_SECRET: get('GOOGLE_CLIENT_SECRET').required().asString(),
     REDIRECT_URI: get('GOOGLE_REDIRECT_URI').required().asUrlString(),
   },
+  URL: {
+    SERVER: get('SERVER_URL').required().asString(),
+    CLIENT: get('CLIENT_URL').required().asString(),
+  },
 }
+
 export default env
